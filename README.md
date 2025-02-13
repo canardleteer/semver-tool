@@ -48,14 +48,14 @@ over again.
 
 ## Todo
 
-[ ] Need status code responses options
-[ ] Possibly remove "text" output, or just make it really nice.
-[ ] Additional language filter implementations
-[ ] Generate random semantic version lists for helping build tests
-[ ] Property testing
-[ ] Github Actions + release-plz
-[ ] Tests around CLI usage, not just internal libs.
-[ ] Commands that take stdin, should probably take file inputs too.
+- [ ] Need status code responses options
+- [ ] Possibly remove "text" output, or just make it really nice.
+- [ ] Additional language filter implementations
+- [ ] Generate random semantic version lists for helping build tests
+- [ ] Property testing
+- [ ] Github Actions + release-plz
+- [ ] Tests around CLI usage, not just internal libs.
+- [ ] Commands that take stdin, should probably take file inputs too.
 
 ## filter-test
 
