@@ -1,4 +1,4 @@
-# semver-tool
+# sem-tool
 
 A simple tool for working with [Semantic Versioning](https://semver.org/)
 on the command line.
@@ -63,12 +63,12 @@ The `filter-test` subcommand will allow you to test a filter on a version.
 
 ```shell
 # Passing test
-$ semver-tool filter-test ">=1.0.3" 1.0.3
+$ sem-tool filter-test ">=1.0.3" 1.0.3
 ---
 pass: true
 
 # Failing test
-$ semver-tool filter-test ">=1.0.3" 1.0.1
+$ sem-tool filter-test ">=1.0.3" 1.0.1
 ---
 pass: false
 ```
@@ -77,12 +77,12 @@ pass: false
 
 The `explain` subcommand will break down a version by components.
 
-The `semver-tool explain --help` command has some useful
+The `sem-tool explain --help` command has some useful
 information regarding "why" the output may appear "over-stringified"
 in the breakdown.
 
 ```shell
-$ semver-tool explain 10.1.4-a.b.c+sda.4
+$ sem-tool explain 10.1.4-a.b.c+sda.4
 ---
 major: 10
 minor: 1
@@ -107,13 +107,13 @@ build-metadata:
 
 ```shell
 # simple case
-$ semver-tool compare 1.2.3 2.2.2
+$ sem-tool compare 1.2.3 2.2.2
 ---
 semantic_ordering: Less
 lexical_ordering: Less
 
 # comparing 2 "equal" versions
-$ semver-tool compare 2.2.2+abc 2.2.2
+$ sem-tool compare 2.2.2+abc 2.2.2
 ---
 semantic_ordering: Equal
 lexical_ordering: Greater
@@ -126,7 +126,7 @@ The `sort` command is somewhat complex, but offers 2 differet modes of input:
 - CLI arguments
 - reading from stdin
 
-It is recommended that you read `semver-tool sort --help`, but here are some
+It is recommended that you read `sem-tool sort --help`, but here are some
 examples. If you're wondering why you may sometimes get different results
 than these, it's once again, helpful to read the `--help`.
 
@@ -134,7 +134,7 @@ than these, it's once again, helpful to read the `--help`.
 
 ```shell
 # simple cli argument sorting
-$ semver-tool sort 1.2.3 3.2.1 2.2.2
+$ sem-tool sort 1.2.3 3.2.1 2.2.2
 ---
 versions:
   1.2.3:
@@ -145,7 +145,7 @@ versions:
   - 3.2.1
 
 # simple cli argument sorting, reverse ordering
-$ semver-tool sort -r 1.2.3 3.2.1 2.2.2
+$ sem-tool sort -r 1.2.3 3.2.1 2.2.2
 ---
 versions:
   3.2.1:
@@ -156,7 +156,7 @@ versions:
   - 1.2.3
 
 # filtering
-$ semver-tool sort -f ">=2" -r 1.2.3 3.2.1 2.2.2
+$ sem-tool sort -f ">=2" -r 1.2.3 3.2.1 2.2.2
 ---
 versions:
   3.2.1:
@@ -169,7 +169,7 @@ versions:
 
 ```shell
 # stdin argument sorting
-$ cat example-data/short-good-versions.txt | semver-tool sort
+$ cat example-data/short-good-versions.txt | sem-tool sort
 ---
 versions:
   0.0.0-alpha.0:
@@ -189,7 +189,7 @@ versions:
   - 99.99.0-rc1.0
 
 # reverse ordering
-$ cat example-data/short-good-versions.txt | semver-tool sort -r
+$ cat example-data/short-good-versions.txt | sem-tool sort -r
 ---
 versions:
   99.99.0-rc1.0:
@@ -209,7 +209,7 @@ versions:
   - 0.0.0-alpha.0+metadata
 
 # filtering (see --help regarding how this filter applies)
-$ cat example-data/short-good-versions.txt | semver-tool sort -r -f '*'
+$ cat example-data/short-good-versions.txt | sem-tool sort -r -f '*'
 ---
 versions:
   0.2.0:
@@ -220,7 +220,7 @@ versions:
   - 0.0.1
 
 # flattening (not recommended)
-$ cat example-data/short-good-versions.txt | semver-tool sort --flatten
+$ cat example-data/short-good-versions.txt | sem-tool sort --flatten
 ---
 versions:
 - 0.0.0-alpha.0+metadata
@@ -233,7 +233,7 @@ versions:
 - 99.99.0-rc1.0
 
 # flat list of latest matching a filter as a plain list
-$ cat example-data/short-good-versions.txt | semver-tool  -o text sort --flatten -r -f "*" 
+$ cat example-data/short-good-versions.txt | sem-tool  -o text sort --flatten -r -f "*" 
 0.2.0
 0.0.2
 0.0.1

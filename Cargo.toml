@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 [package]
-name = "semver-tool"
+name = "sem-tool"
 version = "0.1.0-rc1.0"
 edition = "2021"
 exclude = [
@@ -22,7 +22,7 @@ exclude = [
 license = "Apache-2.0"
 keywords = ["semver", "tools", "cli"]
 authors = ["canardleteer <eris.has.a.dad+github@gmail.com>"]
-repository = "https://github.com/canardleteer/semver-tool"
+repository = "https://github.com/canardleteer/sem-tool"
 categories = ["command-line-utilities"]
 readme = "README.md"
 description = "A simple Semantic Versioning CLI tool for parsing, filtering and sorting"

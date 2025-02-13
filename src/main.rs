@@ -33,7 +33,7 @@ use results::*;
 
 /// Simple program to work with Semantic Versioning 2.0.0
 ///
-/// https://github.com/canardleteer/semver-tool
+/// https://github.com/canardleteer/sem-tool
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 pub struct Args {
