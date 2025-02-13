@@ -29,7 +29,7 @@ listed in the CLI documentation.
 You'll need to pin a version, until I move this past an RC version.
 
 ```shell
-cargo install sem-tool@0.1.0-rc1.0
+cargo install sem-tool
 ```
 
 ## Output
