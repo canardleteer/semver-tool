@@ -26,11 +26,10 @@ listed in the CLI documentation.
 
 ## Installing
 
-Until I put this on [crates.io](https://crates.io), you can install this
-via:
+You'll need to pin a version, until I move this past an RC version.
 
 ```shell
-cargo install --path .
+cargo install sem-tool@0.1.0-rc1.0
 ```
 
 ## Output
