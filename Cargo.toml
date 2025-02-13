@@ -14,7 +14,7 @@
 # limitations under the License.
 [package]
 name = "sem-tool"
-version = "0.1.0-rc1.0"
+version = "0.1.0-rc1.1"
 edition = "2021"
 exclude = [
     "example-data/*",
