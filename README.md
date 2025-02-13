@@ -55,6 +55,7 @@ over again.
 [ ] Property testing
 [ ] Github Actions + release-plz
 [ ] Tests around CLI usage, not just internal libs.
+[ ] Commands that take stdin, should probably take file inputs too.
 
 ## filter-test
 

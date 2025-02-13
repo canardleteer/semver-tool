@@ -25,6 +25,7 @@ authors = ["canardleteer <eris.has.a.dad+github@gmail.com>"]
 repository = "https://github.com/canardleteer/semver-tool"
 categories = ["command-line-utilities"]
 readme = "README.md"
+description = "A simple Semantic Versioning CLI tool for parsing, filtering and sorting"
 
 [dependencies]
 rand = "0.9.0"
