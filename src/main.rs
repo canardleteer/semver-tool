@@ -31,9 +31,6 @@ mod results;
 use misc::*;
 use results::*;
 
-/// Simple program to work with Semantic Versioning 2.0.0
-///
-/// https://github.com/canardleteer/sem-tool
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 pub struct Args {
@@ -47,7 +44,7 @@ pub struct Args {
 /// All commands available
 #[derive(Subcommand, Debug, Clone)]
 pub enum Commands {
-    /// Explain A Version as parsed by the spec
+    /// Explain a valid Semantic Version as parsed by the spec.
     ///
     /// Breaks apart the Semantic Version, into it's individual components.
     ///
@@ -62,19 +59,19 @@ pub enum Commands {
     /// Reference: https://semver.org/#spec-item-11
     ///
     Explain { semantic_version: Version },
-    /// Compare 2 versions.
+    /// Compare 2 Semantic Versions.
     ///
     /// Results are provided in the form
     /// "A is {Greater,Equals,Less} {to,than} B", with both Semantic results
     /// (meaninful results under Semantic Versioning), as well as Lexical
-    /// results (meaninless, but handy for sorting).
+    /// results (meaningless, but handy for sorting text lists).
     Compare {
         /// The base version used for comparison.
         a: Version,
         /// The version we are comparing against.
         b: Version,
     },
-    /// Sort a list of versions, with either Semantic or Lexical ordering.
+    /// Sort a list of valid Semantic Versions, with either Semantic or Lexical ordering.
     ///
     /// Results are grouped by default, under the meaningful components of Semantic
     /// Versioning (without build metadata), then enumerated under that component.
@@ -142,9 +139,9 @@ pub enum Commands {
         /// version per line.
         versions: Option<Vec<Version>>,
     },
-    /// Test a version against a filter
+    /// Test a Semantic Version against a filter
     FilterTest {
-        /// Filter to test against version.
+        /// Filter to test against a specific Semantic Version.
         ///
         /// These filter rules are described by the semver crate `VersionReq``
         /// documentation, and more generally in the cargo book.
