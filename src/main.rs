@@ -66,6 +66,19 @@ pub enum Commands {
     /// (meaninful results under Semantic Versioning), as well as Lexical
     /// results (meaningless, but handy for sorting text lists).
     Compare {
+        /// If you want some slightly complex exit status codes for this dual
+        /// compare, you can turn them on with this flag.
+        ///
+        /// - Completely Equal will result in an exit status of 0 (Success)
+        /// - All other outcomes, are returned with an exit status of the form:
+        ///   - 1XY [between 100-122]
+        ///   - With X being 0 if Less, 1 if Equal, 2 if Greater on the Semantic Compare
+        ///   - With Y being 0 if Less, 1 if Equal, 2 if Greater on the Lexical Compare
+        ///
+        /// The non-0 exit status codes, should be considered UNSTABLE, because something
+        /// better can probably be figured out.
+        #[clap(long, short = 'e', action)]
+        set_exit_status: bool,
         /// The base version used for comparison.
         a: Version,
         /// The version we are comparing against.
@@ -149,6 +162,8 @@ pub enum Commands {
         /// In particular, note the warnings around pre-releases in the
         /// VersionReq documentation.
         ///
+        /// The Status Code will be 0 if it passes, 1 if it fails.
+        ///
         /// References:
         /// - https://docs.rs/semver/1.0.25/semver/struct.VersionReq.html
         /// - https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html
@@ -159,12 +174,25 @@ pub enum Commands {
     },
 }
 
-fn main() -> Result<(), Box<dyn Error>> {
+fn main() -> Result<ApplicationTermination, Box<dyn Error>> {
     let args = Args::parse();
+
+    let mut ignore_exit_status_from_output = false;
 
     let application_output: ApplicationOutput = match args.cmd {
         Commands::Explain { semantic_version } => explain(&semantic_version).into(),
-        Commands::Compare { a, b } => compare(&a, &b).into(),
+        Commands::Compare {
+            set_exit_status,
+            a,
+            b,
+        } => {
+            // If we don't consider non-equivalence an error, don't report one
+            // on process exit.
+            if !set_exit_status {
+                ignore_exit_status_from_output = true;
+            }
+            compare(&a, &b).into()
+        }
         Commands::Sort {
             versions,
             filter,
@@ -231,8 +259,10 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     }
 
-    // TODO(canarleteer): We should include status codes upon exit based on flags.
-    Ok(())
+    Ok(ApplicationTermination::new(
+        application_output,
+        ignore_exit_status_from_output,
+    ))
 }
 
 fn sort(

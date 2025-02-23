@@ -14,14 +14,16 @@
 //! limitations under the License.
 //!
 //! These are generally the "Results" we're looking for, as types.
-use std::{cmp::Ordering, fmt};
+use std::{
+    cmp::Ordering,
+    fmt,
+    process::{ExitCode, Termination},
+};
 
 use indexmap::IndexMap;
 use rand::prelude::*;
 use semver::{BuildMetadata, Version, VersionReq};
 use serde::Serialize;
-
-// use super::misc::*;
 
 /// The result of a simple filter test.
 #[derive(Serialize, PartialEq)]
@@ -32,6 +34,19 @@ pub(crate) struct FilterTestResult {
 impl FilterTestResult {
     pub(crate) fn filter_test(filter: &VersionReq, semantic_version: &Version) -> FilterTestResult {
         filter.matches(semantic_version).into()
+    }
+}
+
+/// A equivalent of an ExitCode, for true/false.
+///
+/// This is expected to remain stable.
+impl Termination for FilterTestResult {
+    fn report(self) -> std::process::ExitCode {
+        if self.pass {
+            ExitCode::SUCCESS
+        } else {
+            ExitCode::FAILURE
+        }
     }
 }
 
@@ -274,6 +289,44 @@ impl ComparisonStatement {
     }
 }
 
+/// Invent a way to reasonably express a non-equivalent ComparisonStatement in
+/// a u8, but really, at that point, just use the YAML output.
+///
+/// - Equavalent of both types, will always be ExitCode::SUCCESS.
+/// - All the rest should be considered UNSTABLE, until we can come up with a
+///   better plan.
+///
+/// I don't think there's a great way to do this, so I'm just going to
+/// enumerate them until something better comes along (I'm sure someone has
+/// already thought of a better way).
+///
+/// For all cases where BOTH semantic and lexical ordering are not Equal:
+///
+/// 111
+///  |+-------- result of the lexical ordering
+///  +--------- result of the semantic ordering
+///
+/// 0 - Less Than
+/// 1 - Equal To
+/// 2 - Greater Than
+///
+/// Examples:
+/// - (semantic: Less, Lexical: Greater) = 102
+/// - (semantic: Equal, Lexical: Equal) = 0 (ExitCode:SUCCESS, and NEVER '111')
+/// - (semantic: Greater, Lexical: Greater) = 122
+impl Termination for ComparisonStatement {
+    fn report(self) -> ExitCode {
+        match (self.semantic_ordering, self.lexical_ordering) {
+            (SerializableOrdering::Equal, SerializableOrdering::Equal) => ExitCode::SUCCESS,
+            (sem, lex) => ExitCode::from(simplify_exit_code(sem, lex)),
+        }
+    }
+}
+
+fn simplify_exit_code(sem: SerializableOrdering, lex: SerializableOrdering) -> u8 {
+    100 + (Into::<u8>::into(sem) * 10) + Into::<u8>::into(lex)
+}
+
 impl fmt::Display for ComparisonStatement {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
@@ -290,6 +343,16 @@ pub(crate) enum SerializableOrdering {
     Less,
     Greater,
     Equal,
+}
+
+impl From<SerializableOrdering> for u8 {
+    fn from(value: SerializableOrdering) -> Self {
+        match value {
+            SerializableOrdering::Less => 0,
+            SerializableOrdering::Equal => 1,
+            SerializableOrdering::Greater => 2,
+        }
+    }
 }
 
 impl From<Ordering> for SerializableOrdering {
@@ -520,30 +583,26 @@ mod tests {
     // FilterTestResult
     #[test]
     fn test_filter_test_result() {
-        assert_eq!(
-            FilterTestResult::filter_test(
-                &VersionReq::parse(">1").unwrap(),
-                &Version::parse("0.0.0").unwrap()
-            )
-            .pass,
-            false
+        let test = FilterTestResult::filter_test(
+            &VersionReq::parse(">1").unwrap(),
+            &Version::parse("0.0.0").unwrap(),
         );
-        assert_eq!(
-            FilterTestResult::filter_test(
-                &VersionReq::parse(">1").unwrap(),
-                &Version::parse("2.0.0").unwrap()
-            )
-            .pass,
-            true
+        assert_eq!(test.pass, false);
+        assert_eq!(test.report(), ExitCode::FAILURE);
+
+        let test = FilterTestResult::filter_test(
+            &VersionReq::parse(">1").unwrap(),
+            &Version::parse("2.0.0").unwrap(),
         );
-        assert_eq!(
-            FilterTestResult::filter_test(
-                &VersionReq::parse(">=1").unwrap(),
-                &Version::parse("1.0.0").unwrap()
-            )
-            .pass,
-            true
+        assert_eq!(test.pass, true);
+        assert_eq!(test.report(), ExitCode::SUCCESS);
+
+        let test = FilterTestResult::filter_test(
+            &VersionReq::parse(">=1").unwrap(),
+            &Version::parse("1.0.0").unwrap(),
         );
+        assert_eq!(test.pass, true);
+        assert_eq!(test.report(), ExitCode::SUCCESS);
 
         // Display Coverage
         let test = FilterTestResult::filter_test(
@@ -560,22 +619,38 @@ mod tests {
             &Version::parse("0.0.0").unwrap(),
             &Version::parse("2.0.0").unwrap(),
         );
-        assert_eq!(test.lexical_ordering, SerializableOrdering::Less);
         assert_eq!(test.semantic_ordering, SerializableOrdering::Less);
+        assert_eq!(test.lexical_ordering, SerializableOrdering::Less);
+        assert_eq!(test.report(), 100.into());
 
         let test = ComparisonStatement::new(
             &Version::parse("2.0.0+100").unwrap(),
             &Version::parse("2.0.0").unwrap(),
         );
-        assert_eq!(test.lexical_ordering, SerializableOrdering::Greater);
         assert_eq!(test.semantic_ordering, SerializableOrdering::Equal);
+        assert_eq!(test.lexical_ordering, SerializableOrdering::Greater);
+        assert_eq!(test.report(), 112.into());
 
         let test = ComparisonStatement::new(
             &Version::parse("2.0.0").unwrap(),
             &Version::parse("2.0.0-rc1").unwrap(),
         );
-        assert_eq!(test.lexical_ordering, SerializableOrdering::Greater);
         assert_eq!(test.semantic_ordering, SerializableOrdering::Greater);
+        assert_eq!(test.lexical_ordering, SerializableOrdering::Greater);
+        assert_eq!(test.report(), 122.into());
+
+        let test = ComparisonStatement::new(
+            &Version::parse("2.4.2").unwrap(),
+            &Version::parse("2.4.2").unwrap(),
+        );
+        assert_eq!(test.semantic_ordering, SerializableOrdering::Equal);
+        assert_eq!(test.lexical_ordering, SerializableOrdering::Equal);
+        assert_eq!(test.report(), ExitCode::SUCCESS);
+
+        let test = ComparisonStatement::new(
+            &Version::parse("2.4.2").unwrap(),
+            &Version::parse("2.4.2").unwrap(),
+        );
 
         // Display Coverage
         let _ = format!("{}", test);
