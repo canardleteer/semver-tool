@@ -43,3 +43,6 @@ serde_json = "1.0.138"
 #                     harder to use with common tools like `yq`, and I haven't
 #                     taken the time to figure out how to make it stop.
 serde_yaml = "0.9.34"
+
+[dev-dependencies]
+assert_cmd = "2.0.16"

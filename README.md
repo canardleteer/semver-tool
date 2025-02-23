@@ -54,10 +54,14 @@ over again.
 - [ ] Possibly remove "text" output, or just make it really nice.
 - [ ] Additional language filter implementations
 - [ ] Generate random semantic version lists for helping build tests
-- [ ] Property testing
-- [ ] Github Actions + release-plz
-- [ ] CLI Testing (probably) with `assert_cmd`
+- [X] Github Actions + release-plz
 - [ ] Commands that take stdin, should probably take file inputs too.
+- [ ] Property testing
+- [ ] CLI Testing (probably) with `assert_cmd`
+  - [X] compare
+  - [X] filter-tests
+  - [ ] all subcommands
+  - make these far more robust
 
 ## filter-test
 
