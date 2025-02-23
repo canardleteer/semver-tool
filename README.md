@@ -135,6 +135,13 @@ semantic_ordering: Equal
 lexical_ordering: Greater
 $ echo $?
 112
+
+$ sem-tool compare -es 2.2.2+abc 2.2.2
+---
+semantic_ordering: Equal
+lexical_ordering: Greater
+$ echo $?
+0
 ```
 
 ### `sort`

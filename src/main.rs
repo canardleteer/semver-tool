@@ -82,6 +82,11 @@ pub enum Commands {
         /// better can probably be figured out.
         #[clap(long, short = 'e', action)]
         set_exit_status: bool,
+        /// Always exit with success when Semantic Versions are Equal.
+        ///
+        /// Mostly impacts the output when the flag `set_exit_status` is set.
+        #[clap(long, short = 's', action)]
+        semantic_exit_status: bool,
         /// The base version used for comparison.
         a: Version,
         /// The version we are comparing against.
@@ -186,6 +191,7 @@ fn main() -> Result<ApplicationTermination, Box<dyn Error>> {
         Commands::Explain { semantic_version } => explain(&semantic_version).into(),
         Commands::Compare {
             set_exit_status,
+            semantic_exit_status,
             a,
             b,
         } => {
@@ -194,7 +200,13 @@ fn main() -> Result<ApplicationTermination, Box<dyn Error>> {
             if !set_exit_status {
                 ignore_exit_status_from_output = true;
             }
-            compare(&a, &b).into()
+            let res = compare(&a, &b);
+
+            if semantic_exit_status && res.semantic_ordering() == &SerializableOrdering::Equal {
+                ignore_exit_status_from_output = true
+            }
+
+            res.into()
         }
         Commands::Sort {
             versions,

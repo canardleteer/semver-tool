@@ -287,6 +287,10 @@ impl ComparisonStatement {
             lexical_ordering: a.cmp(b).into(),
         }
     }
+
+    pub(crate) fn semantic_ordering(&self) -> &SerializableOrdering {
+        &self.semantic_ordering
+    }
 }
 
 /// Invent a way to reasonably express a non-equivalent ComparisonStatement in
@@ -422,9 +426,6 @@ mod tests {
             }
         );
     }
-
-    // SerializableOrdering
-    // ComparisonStatement
 
     // Tests some simple static tests.
     #[test]
