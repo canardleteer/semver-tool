@@ -29,10 +29,16 @@ listed in the CLI documentation.
 
 ## Installing
 
-You'll need to pin a version, until I move this past an RC version.
-
 ```shell
 cargo install sem-tool
+```
+
+## Running
+
+Your best place to start, is:
+
+```shell
+sem-tool --help
 ```
 
 ## Output
@@ -41,47 +47,31 @@ Currently, the following output types are: `yaml`, `text`, `json`.
 
 I favor the `yaml` output, and have made that the default.
 
-## Caveat
+Exit Status is available either by default in obvious cases, or by flag in less obvious cases.
 
-It's been awhile since I've done much Rust programming, but trying to
-make something useful while getting back into it. I'm sure I'm making all
-the normal mistakes I made the first time I starting writing Rust all
-over again.
+## Subcommands
 
-## Todo
-
-- [X] Need status code responses options
-- [ ] Possibly remove "text" output, or just make it really nice.
-- [ ] Additional language filter implementations
-- [ ] Generate random semantic version lists for helping build tests
-- [X] Github Actions + release-plz
-- [ ] Commands that take stdin, should probably take file inputs too.
-- [ ] Property testing
-- [ ] CLI Testing (probably) with `assert_cmd`
-  - [X] compare
-  - [X] filter-tests
-  - [ ] all subcommands
-  - make these far more robust
-
-## filter-test
+### `filter-test`
 
 The `filter-test` subcommand will allow you to test a filter on a version.
 
 ```shell
 # Passing test
-$ sem-tool filter-test ">=1.0.3" 1.0.3; echo $?
+$ sem-tool filter-test ">=1.0.3" 1.0.3
 ---
 pass: true
+$ echo $?
 0
 
 # Failing test
-$ sem-tool filter-test ">=1.0.3" 1.0.1; echo $?
+$ sem-tool filter-test ">=1.0.3" 1.0.1
 ---
 pass: false
+$ echo $?
 1
 ```
 
-## explain
+### `explain`
 
 The `explain` subcommand will break down a version by components.
 
@@ -111,50 +101,54 @@ build-metadata:
   value: '4'
 ```
 
-## compare
+### `compare`
 
 ```shell
 # simple case
-$ sem-tool compare 1.2.3 2.2.2; echo $?
+$ sem-tool compare 1.2.3 2.2.2
 ---
 semantic_ordering: Less
 lexical_ordering: Less
+$ echo $?
 0
 
 # simple case with status code reporting enabled
-$ sem-tool compare -e 1.2.3 2.2.2; echo $?
+$ sem-tool compare -e 1.2.3 2.2.2
 ---
 semantic_ordering: Less
 lexical_ordering: Less
+$ echo $?
 100
 
 # comparing 2 "equal" versions
-$ sem-tool compare 2.2.2+abc 2.2.2; echo $?
+$ sem-tool compare 2.2.2+abc 2.2.2
 ---
 semantic_ordering: Equal
 lexical_ordering: Greater
+$ echo $?
 0
 
 # comparing 2 "equal" versions with status code reporting enabled
-$ sem-tool compare -e 2.2.2+abc 2.2.2; echo $?
+$ sem-tool compare -e 2.2.2+abc 2.2.2
 ---
 semantic_ordering: Equal
 lexical_ordering: Greater
+$ echo $?
 112
 ```
 
-## sort
+### `sort`
 
 The `sort` command is somewhat complex, but offers 2 differet modes of input:
 
 - CLI arguments
-- reading from stdin
+- reading from standard input
 
 It is recommended that you read `sem-tool sort --help`, but here are some
 examples. If you're wondering why you may sometimes get different results
 than these, it's once again, helpful to read the `--help`.
 
-### CLI arguments
+#### `sort` with CLI arguments
 
 ```shell
 # simple cli argument sorting
@@ -189,7 +183,7 @@ versions:
   - 2.2.2
 ```
 
-### stdin
+#### `sort` with standard input
 
 ```shell
 # stdin argument sorting
@@ -262,3 +256,18 @@ $ cat example-data/short-good-versions.txt | sem-tool  -o text sort --flatten -r
 0.0.2
 0.0.1
 ```
+
+## Todo
+
+- [X] Need status code responses options
+- [ ] Possibly remove "text" output, or just make it really nice.
+- [ ] Additional language filter implementations
+- [ ] Generate random semantic version lists for helping build tests
+- [X] Github Actions + release-plz
+- [ ] Commands that take stdin, should probably take file inputs too.
+- [ ] Property testing
+- [ ] CLI Testing (probably) with `assert_cmd`
+  - [X] `compare`
+  - [X] `filter-test`
+  - [ ] all subcommands
+  - make these far more robust
