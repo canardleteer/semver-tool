@@ -278,3 +278,5 @@ $ cat example-data/short-good-versions.txt | sem-tool  -o text sort --flatten -r
   - [X] `filter-test`
   - [ ] all subcommands
   - make these far more robust
+  - restructure or add a framework to make them more legible & composable
+  - validate all output types
