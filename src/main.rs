@@ -69,11 +69,14 @@ pub enum Commands {
         /// If you want some slightly complex exit status codes for this dual
         /// compare, you can turn them on with this flag.
         ///
-        /// - Completely Equal will result in an exit status of 0 (Success)
-        /// - All other outcomes, are returned with an exit status of the form:
-        ///   - 1XY [between 100-122]
-        ///   - With X being 0 if Less, 1 if Equal, 2 if Greater on the Semantic Compare
-        ///   - With Y being 0 if Less, 1 if Equal, 2 if Greater on the Lexical Compare
+        /// When both Semantic and Lexical comparisons are Equal, the command
+        /// will end with an exit status of 0 (Success).
+        ///
+        /// All other outcomes, are returned with an exit status of the form: 1XY [between 100-122].
+        ///
+        ///   - With X being (0 if Less, 1 if Equal, 2 if Greater) on the Semantic Compare
+        ///
+        ///   - With Y being (0 if Less, 1 if Equal, 2 if Greater) on the Lexical Compare
         ///
         /// The non-0 exit status codes, should be considered UNSTABLE, because something
         /// better can probably be figured out.
