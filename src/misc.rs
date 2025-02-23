@@ -17,6 +17,7 @@
 use clap::ValueEnum;
 use core::fmt;
 use serde::Serialize;
+use std::process::{ExitCode, Termination};
 use thiserror::Error;
 
 use crate::results;
@@ -37,6 +38,32 @@ pub(crate) enum OutputFormat {
     Text,
     Yaml,
     Json,
+}
+
+/// ApplicationTermination catches some of the awkward flagging around how we
+/// determine our exit status.
+pub(crate) enum ApplicationTermination {
+    Normal(ApplicationOutput),
+    AlwaysSuccessful(ApplicationOutput),
+}
+
+impl ApplicationTermination {
+    pub(crate) fn new(output: ApplicationOutput, hard_success: bool) -> ApplicationTermination {
+        if hard_success {
+            ApplicationTermination::AlwaysSuccessful(output)
+        } else {
+            ApplicationTermination::Normal(output)
+        }
+    }
+}
+
+impl Termination for ApplicationTermination {
+    fn report(self) -> ExitCode {
+        match self {
+            ApplicationTermination::Normal(application_output) => application_output.report(),
+            ApplicationTermination::AlwaysSuccessful(_application_output) => ExitCode::SUCCESS,
+        }
+    }
 }
 
 #[derive(Serialize)]
@@ -80,6 +107,20 @@ impl From<results::FlatVersionsList> for ApplicationOutput {
 impl From<results::FilterTestResult> for ApplicationOutput {
     fn from(value: results::FilterTestResult) -> Self {
         ApplicationOutput::FilterTestResult(value)
+    }
+}
+
+impl Termination for ApplicationOutput {
+    // NOTE(canardleteer): only expected to be called along certain code paths
+    //                     (at least for now).
+    fn report(self) -> ExitCode {
+        match self {
+            ApplicationOutput::ComparisonStatement(comparison_statement) => {
+                comparison_statement.report()
+            }
+            ApplicationOutput::FilterTestResult(filter_test_result) => filter_test_result.report(),
+            _ => ExitCode::SUCCESS,
+        }
     }
 }
 

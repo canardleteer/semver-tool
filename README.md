@@ -50,13 +50,13 @@ over again.
 
 ## Todo
 
-- [ ] Need status code responses options
+- [X] Need status code responses options
 - [ ] Possibly remove "text" output, or just make it really nice.
 - [ ] Additional language filter implementations
 - [ ] Generate random semantic version lists for helping build tests
 - [ ] Property testing
 - [ ] Github Actions + release-plz
-- [ ] Tests around CLI usage, not just internal libs.
+- [ ] CLI Testing (probably) with `assert_cmd`
 - [ ] Commands that take stdin, should probably take file inputs too.
 
 ## filter-test
@@ -65,14 +65,16 @@ The `filter-test` subcommand will allow you to test a filter on a version.
 
 ```shell
 # Passing test
-$ sem-tool filter-test ">=1.0.3" 1.0.3
+$ sem-tool filter-test ">=1.0.3" 1.0.3; echo $?
 ---
 pass: true
+0
 
 # Failing test
-$ sem-tool filter-test ">=1.0.3" 1.0.1
+$ sem-tool filter-test ">=1.0.3" 1.0.1; echo $?
 ---
 pass: false
+1
 ```
 
 ## explain
@@ -109,16 +111,32 @@ build-metadata:
 
 ```shell
 # simple case
-$ sem-tool compare 1.2.3 2.2.2
+$ sem-tool compare 1.2.3 2.2.2; echo $?
 ---
 semantic_ordering: Less
 lexical_ordering: Less
+0
+
+# simple case with status code reporting enabled
+$ sem-tool compare -e 1.2.3 2.2.2; echo $?
+---
+semantic_ordering: Less
+lexical_ordering: Less
+100
 
 # comparing 2 "equal" versions
-$ sem-tool compare 2.2.2+abc 2.2.2
+$ sem-tool compare 2.2.2+abc 2.2.2; echo $?
 ---
 semantic_ordering: Equal
 lexical_ordering: Greater
+0
+
+# comparing 2 "equal" versions with status code reporting enabled
+$ sem-tool compare -e 2.2.2+abc 2.2.2; echo $?
+---
+semantic_ordering: Equal
+lexical_ordering: Greater
+112
 ```
 
 ## sort
