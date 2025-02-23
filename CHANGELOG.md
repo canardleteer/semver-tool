@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.3](https://github.com/canardleteer/sem-tool/compare/v0.1.2...v0.1.3) - 2025-02-23
+
+### Added
+
+- lightweight explain and sort cli tests
+- add compare --semantic-exit-status
+
+### Other
+
+- clean up compare exit code docs (slightly)
+
 ## [0.1.2](https://github.com/canardleteer/sem-tool/compare/v0.1.1...v0.1.2) - 2025-02-23
 
 ### Added
