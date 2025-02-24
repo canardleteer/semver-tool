@@ -2,12 +2,18 @@ use assert_cmd::Command;
 
 #[test]
 fn compare_boring_cases() {
-    // Error status with no args.
+    // Passing status with no args.
+    //
+    // Why? Because the default behavior with no args is to read from STDIN,
+    // and STDIN provides nothing, so the list is truly empty.
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
-    cmd.assert().append_context("sort", "no args").failure();
+    cmd.arg("sort")
+        .assert()
+        .append_context("sort", "no args")
+        .success();
 
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
-    let assert = cmd.arg("--help").assert();
+    let assert = cmd.arg("sort").arg("--help").assert();
     assert.append_context("sort", "help").success();
 
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
