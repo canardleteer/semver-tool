@@ -77,6 +77,26 @@ $ echo $?
 1
 ```
 
+### `validate`
+
+The `validate` subcommand just helps a script determine if a string is a valid Semantic Version or not.
+
+```shell
+# Passing test
+$ sem-tool validate 1.0.3-x+m
+---
+valid: true
+$ echo $?
+0
+
+# Failing test
+$ sem-tool validate a.b.c
+---
+valid: false
+$ echo $?
+1
+```
+
 ### `explain`
 
 The `explain` subcommand will break down a version by components.

@@ -170,7 +170,7 @@ pub enum Commands {
         /// In particular, note the warnings around pre-releases in the
         /// VersionReq documentation.
         ///
-        /// The Status Code will be 0 if it passes, 1 if it fails.
+        /// The Status Code will be 0 if it passes, non-zero if it fails.
         ///
         /// References:
         /// - https://docs.rs/semver/1.0.25/semver/struct.VersionReq.html
@@ -179,6 +179,13 @@ pub enum Commands {
 
         /// Version to test
         semantic_version: Version,
+    },
+    /// Simply validates an argument, to confirm it is a valid Semantic Version
+    ///
+    /// The Status Code will be 0 if it is valid, non-zero if it is not.
+    Validate {
+        /// Version to validate
+        version: Version,
     },
 }
 
@@ -257,6 +264,7 @@ fn main() -> Result<ApplicationTermination, Box<dyn Error>> {
             filter,
             semantic_version,
         } => filter_test(&filter, &semantic_version).into(),
+        Commands::Validate { version } => validate(&version).into(),
     };
 
     match args.out {
@@ -299,4 +307,9 @@ fn explain(v: &Version) -> VersionExplaination {
 }
 fn filter_test(filter: &VersionReq, semantic_version: &Version) -> FilterTestResult {
     FilterTestResult::filter_test(filter, semantic_version)
+}
+
+fn validate(semantic_version: &Version) -> ValidateResult {
+    // NOTE(canardleteer): This is somewhat of a useless code path.
+    ValidateResult::validate(semantic_version)
 }

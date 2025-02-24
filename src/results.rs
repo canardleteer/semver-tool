@@ -27,6 +27,26 @@ use serde::Serialize;
 
 /// The result of a simple filter test.
 #[derive(Serialize, PartialEq)]
+pub(crate) struct ValidateResult {
+    valid: bool,
+}
+
+impl ValidateResult {
+    pub(crate) fn validate(_semantic_version: &Version) -> ValidateResult {
+        // The validation, is already done by reaching this code path.
+        ValidateResult { valid: true }
+    }
+}
+
+impl fmt::Display for ValidateResult {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        writeln!(f, "valid: {}", self.valid)?;
+        Ok(())
+    }
+}
+
+/// The result of a simple filter test.
+#[derive(Serialize, PartialEq)]
 pub(crate) struct FilterTestResult {
     pass: bool,
 }
