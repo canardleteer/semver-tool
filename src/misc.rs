@@ -77,8 +77,10 @@ pub(crate) enum ApplicationOutput {
     VersionExplaination(results::VersionExplaination),
     /// Flat list of versions
     FlatVersionsList(results::FlatVersionsList),
-    /// Results from a test
+    /// Results from a filter test
     FilterTestResult(results::FilterTestResult),
+    /// Results from a test
+    ValidateResult(results::ValidateResult),
 }
 
 impl From<results::ComparisonStatement> for ApplicationOutput {
@@ -107,6 +109,12 @@ impl From<results::FlatVersionsList> for ApplicationOutput {
 impl From<results::FilterTestResult> for ApplicationOutput {
     fn from(value: results::FilterTestResult) -> Self {
         ApplicationOutput::FilterTestResult(value)
+    }
+}
+
+impl From<results::ValidateResult> for ApplicationOutput {
+    fn from(value: results::ValidateResult) -> Self {
+        ApplicationOutput::ValidateResult(value)
     }
 }
 
@@ -143,6 +151,9 @@ impl fmt::Display for ApplicationOutput {
                 write!(f, "{}", v)
             }
             ApplicationOutput::FilterTestResult(v) => {
+                write!(f, "{}", v)
+            }
+            ApplicationOutput::ValidateResult(v) => {
                 write!(f, "{}", v)
             }
         }
