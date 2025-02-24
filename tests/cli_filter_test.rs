@@ -4,12 +4,13 @@ use assert_cmd::Command;
 fn compare_boring_cases() {
     // Error status with no args.
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
-    cmd.assert()
+    cmd.arg("filter-test")
+        .assert()
         .append_context("filter-test", "no args")
         .failure();
 
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
-    let assert = cmd.arg("--help").assert();
+    let assert = cmd.arg("filter-test").arg("--help").assert();
     assert.append_context("filter-test", "help").success();
 
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
