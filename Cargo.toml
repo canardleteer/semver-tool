@@ -67,6 +67,8 @@ regex = "1.11.1"
 assert_cmd = "2.0.16"
 insta = { version = "1.42.1", features = ["json", "yaml"] }
 insta-cmd = "0.6.0"
+proptest = "1.6.0"
+proptest-derive = "0.5.1"
 
 # The profile that 'dist' will build with
 [profile.dist]

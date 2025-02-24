@@ -364,6 +364,7 @@ $ sem-tool -o text generate -s 1000 | sem-tool sort
 - [X] Need status code responses options
 - [X] potential ambiguity
 - [X] regex validate
+- [ ] Simple `validate` command.
 - [ ] Possibly remove "text" output, or just make it really nice.
 - [ ] Additional language filter implementations
 - [X] Generate random semantic version lists for helping build tests
