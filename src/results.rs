@@ -633,6 +633,16 @@ mod tests {
         let _ = format!("{}", test);
     }
 
+    #[test]
+    fn test_validate() {
+        // This test is somewhat useless except for corvarage.
+        let test = ValidateResult::validate(&Version::parse("0.0.0-x+b").unwrap());
+        assert!(test.valid);
+
+        // Display Coverage
+        let _ = format!("{}", test);
+    }
+
     // ComparisonStatement
     #[test]
     fn test_comparison_statement() {
