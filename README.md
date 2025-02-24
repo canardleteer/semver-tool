@@ -279,9 +279,12 @@ $ cat example-data/short-good-versions.txt | sem-tool  -o text sort --flatten -r
 - [X] Github Actions + release-plz
 - [ ] Commands that take stdin, should probably take file inputs too.
 - [ ] Property testing
+  - [X] There is work on [this branch](https://github.com/canardleteer/sem-tool/tree/proptest), but it needs a reorg.
 - [ ] CLI Testing (probably) with `assert_cmd`
   - [X] `compare`
   - [X] `filter-test`
+  - [X] `sort`
+  - [X] `explain`
   - [ ] all subcommands
   - make these far more robust
   - restructure or add a framework to make them more legible & composable
