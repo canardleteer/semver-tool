@@ -27,6 +27,12 @@ This is a single tool to provide support for that purpse.
 Where appropriate opinions on the spec have been made, they have been
 listed in the CLI documentation.
 
+## Known Limitations
+
+- We (currently) use the [semver crate](https://crates.io/crates/semver), which
+  has some limitations not present in the spec.
+  - `u64::MAX` is the maximum a value can be in any of `MAJOR`, `MINOR` or `PATCH`.
+
 ## Installing
 
 ```shell
