@@ -46,3 +46,5 @@ serde_yaml = "0.9.34"
 
 [dev-dependencies]
 assert_cmd = "2.0.16"
+proptest = "1.6.0"
+proptest-derive = "0.5.1"

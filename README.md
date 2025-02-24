@@ -293,6 +293,7 @@ $ cat example-data/short-good-versions.txt | sem-tool  -o text sort --flatten -r
 ## Todo
 
 - [X] Need status code responses options
+- [ ] Simple `validate` command.
 - [ ] Possibly remove "text" output, or just make it really nice.
 - [ ] Additional language filter implementations
 - [ ] Generate random semantic version lists for helping build tests
