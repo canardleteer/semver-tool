@@ -456,7 +456,6 @@ mod tests {
             .collect();
 
         let test = OrderedVersionMap::new(&mut scaffold1, &None, false, false);
-        println!("{:?}", test.inner.keys());
         assert!(test.inner.contains_key(&Version::parse("99.0.0").unwrap()));
         assert!(test.inner.contains_key(&Version::parse("100.0.0").unwrap()));
         assert!(test.inner.contains_key(&Version::parse("0.0.1").unwrap()));
@@ -491,7 +490,6 @@ mod tests {
         let test = OrderedVersionMap::new(&mut scaffold2, &None, false, false);
         let test_keys: Vec<Version> = test.inner.keys().map(|v| v.clone()).collect();
         assert!(test_keys.len() == 12);
-        println!("{}", test_keys[0]);
         assert!(test_keys[0] == Version::parse("0.0.0-alpha.0").unwrap());
         assert!(test_keys[test_keys.len() - 1] == Version::parse("99.99.0-rc1.0").unwrap());
 
@@ -499,7 +497,6 @@ mod tests {
         let test = OrderedVersionMap::new(&mut scaffold2, &None, false, true);
         let test_keys: Vec<Version> = test.inner.keys().map(|v| v.clone()).collect();
         assert!(test_keys.len() == 12);
-        println!("{}", test_keys[0]);
         assert!(test_keys[test_keys.len() - 1] == Version::parse("0.0.0-alpha.0").unwrap());
         assert!(test_keys[0] == Version::parse("99.99.0-rc1.0").unwrap());
 
@@ -512,7 +509,6 @@ mod tests {
         );
         let test_keys: Vec<Version> = test.inner.keys().map(|v| v.clone()).collect();
         assert!(test_keys.len() == 5);
-        println!("{}", test_keys[0]);
         assert!(test_keys[0] == Version::parse("0.0.1").unwrap());
         assert!(test_keys[test_keys.len() - 1] == Version::parse("1.0.0").unwrap());
 
