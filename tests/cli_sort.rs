@@ -1,7 +1,7 @@
 use assert_cmd::Command;
 
 #[test]
-fn compare_boring_cases() {
+fn cli_sort_boring_cases() {
     // Passing status with no args.
     //
     // Why? Because the default behavior with no args is to read from STDIN,
@@ -23,7 +23,7 @@ fn compare_boring_cases() {
 
 // NOTE(canardleteer): These are not very robust at all.
 #[test]
-fn compare_basic_cases() {
+fn cli_sort_basic_cases() {
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
     let assert = cmd.arg("sort").arg("0.1.2-rc0").assert();
     assert.append_context("sort", "single item").success();
