@@ -1,7 +1,7 @@
 use assert_cmd::Command;
 
 #[test]
-fn compare_boring_cases() {
+fn cli_validate_boring_cases() {
     // Error status with no args.
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
     cmd.arg("validate")
@@ -21,7 +21,7 @@ fn compare_boring_cases() {
 }
 
 #[test]
-fn compare_basic_cases() {
+fn cli_validate_basic_cases() {
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
     let assert = cmd.arg("validate").arg("0.1.2-rc.0.a.1.b+a.0.b.1").assert();
     assert.append_context("validate", "help").success();
