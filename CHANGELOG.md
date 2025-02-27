@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.5](https://github.com/canardleteer/sem-tool/compare/v0.1.4...v0.1.5) - 2025-02-27
+
+### Other
+
+- typo in cli test
+- rename cli tests
+
 ## [0.1.4](https://github.com/canardleteer/sem-tool/compare/v0.1.3...v0.1.4) - 2025-02-24
 
 ### Added
