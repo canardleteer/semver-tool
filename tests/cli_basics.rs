@@ -1,7 +1,7 @@
 use assert_cmd::Command;
 
 #[test]
-fn does_it_exist() {
+fn cli_basics() {
     // Fail with no input.
     Command::cargo_bin(env!("CARGO_PKG_NAME"))
         .unwrap()
