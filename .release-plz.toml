@@ -1,0 +1,8 @@
+[workspace]
+[[package]]
+name="sem-tool"
+
+# `git_release_enable` is used by the `release-plz` tool to enable/disable
+# some form of "Release API", but we allow `dist` to publish the `release`
+# on Github.
+git_release_enable = false
