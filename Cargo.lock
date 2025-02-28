@@ -325,7 +325,7 @@ checksum = "6ea1a2d0a644769cc99faa24c3ad26b379b786fe7c36fd3c546254801650e6dd"
 
 [[package]]
 name = "sem-tool"
-version = "0.1.5-rc1.1"
+version = "0.1.5-rc1.2"
 dependencies = [
  "assert_cmd",
  "clap",
