@@ -28,6 +28,11 @@ categories = ["command-line-utilities"]
 readme = "README.md"
 description = "A simple Semantic Versioning CLI tool for parsing, filtering, sorting and explaining"
 
+# `git_release` is used by the `release-plz` tool to enable/disable some form
+# of "Release API", but we allow `dist` to publish the `release`, that doesn't
+# pay attention to this flag.
+git_release = false
+
 [package.metadata.wix]
 upgrade-guid = "4B0BC255-6C49-4242-8F92-789262A65064"
 path-guid = "D28BFC08-1707-4BF8-ACB8-9A4496178C5F"
