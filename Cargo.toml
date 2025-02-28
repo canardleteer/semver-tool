@@ -14,7 +14,7 @@
 # limitations under the License.
 [package]
 name = "sem-tool"
-version = "0.1.5-rc1.4"
+version = "0.1.5"
 edition = "2021"
 exclude = [
     "example-data/*",
@@ -58,6 +58,4 @@ assert_cmd = "2.0.16"
 [profile.dist]
 inherits = "release"
 lto = "thin"
-pr-run-mode = "upload"
-checksum = "sha3-sha512"
-cargo-auditable = true
+
