@@ -4,7 +4,7 @@
 
 [![Crates.io](https://img.shields.io/crates/v/sem-tool?style=flat-square)](https://crates.io/crates/sem-tool)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue?style=flat-square)](LICENSE-APACHE)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/canardleteer/sem-tool/testing.yml?branch=main&style=flat-square)](https://github.com/clap-rs/clap/actions/workflows/testing.yml?query=branch%3Amain)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/canardleteer/sem-tool/testing.yml?branch=main&style=flat-square)](https://github.com/canardleteer/sem-tool/actions/workflows/testing.yml?query=branch%3Amain)
 
 Semantic Versioning seems simple, but in many cases, it's not implemented
 correctly, and people only consider the MAJOR.MINOR.PATCH cases. When this
@@ -15,7 +15,7 @@ The Rust ecosystem, as well as most Cloud Native patterns have adopted
 SemVer. Not everyone has, and sometimes a little grease is needed to get
 systems back on track where there's divergence.
 
-It can be damaging to a project, when semantic versioning is only
+It can be damaging to a project, when Semantic Versioning is only
 partially or incorrectly implemented. It's a foundational communication
 mechanism for engineers, and should be treated with the care and diligence
 it's owed.
@@ -32,8 +32,6 @@ listed in the CLI documentation.
 - We (currently) use the [semver crate](https://crates.io/crates/semver), which
   has some limitations not present in the spec.
   - `u64::MAX` is the maximum a value can be in any of `MAJOR`, `MINOR` or `PATCH`.
-  - I assume the above is true for Numeric segments of Build Metadata &
-    Pre-releases, but I have not tested yet.
   - The maximum number of comparators for a filter, is 32.
 
 ## Installing
