@@ -32,12 +32,20 @@ listed in the CLI documentation.
 - We (currently) use the [semver crate](https://crates.io/crates/semver), which
   has some limitations not present in the spec.
   - `u64::MAX` is the maximum a value can be in any of `MAJOR`, `MINOR` or `PATCH`.
+  - I assume the above is true for Numeric segments of Build Metadata &
+    Pre-releases, but I have not tested yet.
+  - The maximum number of comparators for a filter, is 32.
 
 ## Installing
+
+- The easy way, if you use Rust, is:
 
 ```shell
 cargo install sem-tool
 ```
+
+- [Releases](https://github.com/canardleteer/sem-tool/releases) have various installer
+  patterns for multiple Operating Systems and Package Management tools.
 
 ## Running
 
