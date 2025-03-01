@@ -25,7 +25,6 @@ fn cli_sort_boring_cases() {
         .failure();
 }
 
-// NOTE(canardleteer): These are not very robust at all.
 #[test]
 fn cli_sort_basic_cases() {
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
@@ -39,7 +38,31 @@ fn cli_sort_basic_cases() {
         .arg("0.1.2-rc0")
         .arg("0.1.2-rc1")
         .assert();
-    assert.append_context(TEST_PKG_NAME, "help").success();
+    assert
+        .append_context(TEST_PKG_NAME, "2 items, -f >0")
+        .success();
+
+    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let assert = cmd
+        .arg("sort")
+        .arg("-f >1")
+        .arg("0.1.2-rc0")
+        .arg("0.1.2-rc1")
+        .assert();
+    assert
+        .append_context(TEST_PKG_NAME, "2 items, -f >1")
+        .success();
+
+    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let assert = cmd
+        .arg("sort")
+        .arg("-f >a")
+        .arg("0.1.2-rc0")
+        .arg("0.1.2-rc1")
+        .assert();
+    assert
+        .append_context(TEST_PKG_NAME, "2 items, -f >a")
+        .failure();
 
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
     let assert = cmd
