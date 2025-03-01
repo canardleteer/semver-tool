@@ -1,28 +1,30 @@
 use assert_cmd::Command;
 
+const TEST_PKG_NAME: &str = "compare";
+
 #[test]
 fn cli_compare_boring_cases() {
     // Error status with no args.
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
     cmd.arg("compare")
         .assert()
-        .append_context("compare", "no args")
+        .append_context(TEST_PKG_NAME, "no args")
         .failure();
 
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
     let assert = cmd.arg("compare").arg("--help").assert();
-    assert.append_context("compare", "help").success();
+    assert.append_context(TEST_PKG_NAME, "help").success();
 
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
     let assert = cmd.arg("compare").arg("a.b.c").assert();
     assert
-        .append_context("compare", "1 bad semver args")
+        .append_context(TEST_PKG_NAME, "1 bad semver args")
         .failure();
 
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
     let assert = cmd.arg("compare").arg("a.b.c").arg("x.y.z").assert();
     assert
-        .append_context("compare", "2 bad semver args")
+        .append_context(TEST_PKG_NAME, "2 bad semver args")
         .failure();
 }
 
@@ -34,7 +36,7 @@ fn cli_compare_basic_cases() {
     let assert = cmd.arg("compare").arg("1.2.3").arg("4.5.6").assert();
 
     assert
-        .append_context("compare", "no exit code reporting")
+        .append_context(TEST_PKG_NAME, "no exit code reporting")
         .success();
 
     // Should be (sem: Equal, lex: Equal) aka Success
@@ -46,7 +48,7 @@ fn cli_compare_basic_cases() {
         .arg("1.2.3")
         .assert();
     assert
-        .append_context("compare", "exit code reporting")
+        .append_context(TEST_PKG_NAME, "exit code reporting")
         .success();
 
     // Should be (sem: Less, lex: Less) aka 100
@@ -58,7 +60,7 @@ fn cli_compare_basic_cases() {
         .arg("4.5.6")
         .assert();
     assert
-        .append_context("compare", "exit code reporting")
+        .append_context(TEST_PKG_NAME, "exit code reporting")
         .code(100);
 
     // Should be (sem: Greater, lex: Greater) aka 122
@@ -70,7 +72,7 @@ fn cli_compare_basic_cases() {
         .arg("1.2.3")
         .assert();
     assert
-        .append_context("compare", "exit code reporting")
+        .append_context(TEST_PKG_NAME, "exit code reporting")
         .code(122);
 
     // Should be (sem: Equal, lex: Greater) aka 112
@@ -82,7 +84,7 @@ fn cli_compare_basic_cases() {
         .arg("1.2.3+0")
         .assert();
     assert
-        .append_context("compare", "exit code reporting")
+        .append_context(TEST_PKG_NAME, "exit code reporting")
         .code(112);
 
     // Should be (sem: Equal, lex: Less) aka 110
@@ -94,7 +96,7 @@ fn cli_compare_basic_cases() {
         .arg("1.2.3+1")
         .assert();
     assert
-        .append_context("compare", "exit code reporting")
+        .append_context(TEST_PKG_NAME, "exit code reporting")
         .code(110);
 
     // Should be (sem: Equal, lex: Less) aka 110, but overridden by -s
