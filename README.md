@@ -307,11 +307,14 @@ $ cat example-data/short-good-versions.txt | sem-tool  -o text sort --flatten -r
 - [ ] Property testing
   - [X] There is work on [this branch](https://github.com/canardleteer/sem-tool/tree/proptest), but it needs a reorg.
 - [ ] CLI Testing (probably) with `assert_cmd`
-  - [X] `compare`
-  - [X] `filter-test`
-  - [X] `sort`
-  - [X] `explain`
-  - [ ] all subcommands
-  - make these far more robust
-  - restructure or add a framework to make them more legible & composable
-  - validate all output types
+  - [X] all subcommands
+  - [ ] make these far more robust
+  - [ ] restructure or add a framework to make them more legible & composable
+  - [ ] validate all output types
+  - [ ] output snapshotting
+    - [ ] basic
+    - [ ] output snapshotting of all types
+    - [ ] output snapshotting with good labels
+- [ ] Unit Testing
+  - [ ] Validate output
+  
