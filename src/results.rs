@@ -311,6 +311,11 @@ impl ComparisonStatement {
     pub(crate) fn semantic_ordering(&self) -> &SerializableOrdering {
         &self.semantic_ordering
     }
+
+    #[allow(dead_code)]
+    pub(crate) fn lexical_ordering(&self) -> &SerializableOrdering {
+        &self.lexical_ordering
+    }
 }
 
 /// Invent a way to reasonably express a non-equivalent ComparisonStatement in
