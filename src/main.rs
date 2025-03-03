@@ -349,185 +349,37 @@ fn generate(small: bool, count: usize) -> GenerateResult {
 
 #[cfg(test)]
 mod tests {
-    use core::fmt;
-
     use proptest::prelude::*;
-    use proptest_derive::Arbitrary;
-    use semver::{Version, VersionReq};
+    use proptest_semver::*;
 
-    const MAX_VERSIONS_FOR_SORT_TEST: usize = 8;
-    // NOTE(canardleteer): This landed in a weird place.
-    //
-    //                     Overall, the Arbitrary implementation aspect of this
-    //                     should probably live in it's own module or crate,
-    //                     focusing on both String based generation and Standard
-    //                     Types generation, with optional ordering guarentees.
-    //
-    //                     From String generation is extremely slow, so
-    //                     everything has been dialed down, but doesn't need to
-    //                     be in case of Standard Types generation.
-    //
-    //                     Landing this testing in main, was a want a reach for
-    //                     a compromise between the two, within the
-    //                     implementation of a CLI tool... But really, those
-    //                     separate kinds of tests, belong in the CLI tests, and
-    //                     the `mod misc` tests.
     proptest! {
         //                 None of these tests do much more than ensure the
         //                 application doesn't bounce back or crash on valid
         //                 input.
         #[test]
         fn compare(a in arb_version(), b in arb_version()) {
-            // println!("version_a: {a}");
-            // println!("version_b: {b}");
             super::compare(&a, &b);
         }
 
         #[test]
         fn explain(version in arb_version()) {
-            // println!("version: {version}");
             super::explain(&version);
         }
 
         #[test]
-        fn filter_test(filter in arb_version_req(), version in arb_version()) {
-            // println!("filter: {filter}");
-            // println!("version: {version}");
+        fn validate(version in arb_version()) {
+            super::validate(&version);
+        }
+
+        #[test]
+        fn filter_test(filter in arb_version_req(MAX_COMPARATORS_IN_VERSION_REQ_STRING), version in arb_version()) {
             super::filter_test(&filter, &version);
         }
 
         #[test]
-        fn sort(versions in arb_vec_versions(), filter in arb_optional_version_req(), lexical_sorting in any::<bool>(), reverse in any::<bool>()) {
-            // println!("versions.len(): {} (shrunk to a max of {})", versions.len(), MAX_VERSIONS_FOR_SORT_TEST);
-            let mut versions = if versions.len() > MAX_VERSIONS_FOR_SORT_TEST {
-                versions[0..MAX_VERSIONS_FOR_SORT_TEST-1].to_vec()
-            } else {
-                versions.clone()
-            };
-
+        fn sort(versions in arb_vec_versions(256), filter in arb_optional_version_req(0.5, MAX_COMPARATORS_IN_VERSION_REQ_STRING), lexical_sorting in any::<bool>(), reverse in any::<bool>()) {
+            let mut versions = versions.clone();
             super::sort(&mut versions, &filter, lexical_sorting, reverse);
         }
     }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Property Test framework components that should probably be placed
-    // elsewhere.
-    //
-    // These are deived from the following FAQ section in the
-    // Semantic Versioning 2.0.0 Spec:
-    // https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
-    //
-    // We do not use the string regex for MAJOR, MINOR, or PATCH because of the
-    // semver crate u64::MAX limit, which is generally reasonable.
-    //
-    // It is worth noting, that how these are written, they are generally
-    // "self-Optional", as in they will be generated as an empty string in the
-    // case of None. This is just to keep them inline with the spec regex for
-    // now, but that can be changed.
-    //
-    // These remove the Unicode cases, because the spec specifies ASCII.
-
-    /// Regex to build a Pre-Release string
-    const PRERELEASE_REGEX: &str = r"(?-u:(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?)";
-    /// Regex to build a Build Metadata string
-    const BUILD_METADATA_REGEX: &str = r"(?-u:(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)";
-
-    /// NOTE(canardleteer): I can't really imagine a use case of 8, let
-    ///                     alone higher... But what ever I can't imagine,
-    ///                     someone will try.
-    ///
-    ///                     I do suggest, if increasing this limit, to
-    ///                     rebalance the tests towards the lower end,
-    ///                     since the filters are bound to be
-    ///                     over-exclusionary.
-    const MAX_COMPARATORS_IN_VERSION_REQ: usize = 8;
-
-    // I've picked the max, for performance reasons, not testing strength. The
-    // `semver` crate is optimized for "short" pre-release versions, and we
-    // don't do a great job of fitting in that profile.
-    const MAX_VERSIONS_IN_VEC_VERSIONS: usize = 16;
-
-    prop_compose! {
-        fn arb_version()(major in any::<u64>().prop_map(|v| v.to_string()), minor in any::<u64>().prop_map(|v| v.to_string()), patch in any::<u64>().prop_map(|v| v.to_string()), pr in PRERELEASE_REGEX, bm in BUILD_METADATA_REGEX) -> Version {
-            let fmt_string = format!("{major}.{minor}.{patch}{pr}{bm}");
-            Version::parse(&fmt_string).unwrap()
-        }
-    }
-
-    prop_compose! {
-        fn arb_vec_versions()(vec in prop::collection::vec(arb_version(), 1..MAX_VERSIONS_IN_VEC_VERSIONS)) -> Vec<Version> {
-            vec
-        }
-    }
-
-    prop_compose! {
-        fn arb_comparator()(op in any::<ComparatorOp>(), major in any::<u64>(), minor in any::<Option<u64>>(), patch in any::<Option<u64>>(), pr in PRERELEASE_REGEX) -> String {
-            match (minor, patch) {
-                (None, None) | (None, _)=> {
-                    format!("{op}{major}")
-                },
-                (Some(minor), None) => {
-                    format!("{op}{major}.{minor}")
-                },
-                (Some(minor), Some(patch)) => {
-                    format!("{op}{major}.{minor}.{patch}{pr}")
-                },
-            }.to_string()
-        }
-    }
-
-    prop_compose! {
-        fn arb_vec_comparators()(vec in prop::collection::vec(arb_comparator(), 1..MAX_COMPARATORS_IN_VERSION_REQ)) -> Vec<String> {
-            vec
-        }
-    }
-
-    prop_compose! {
-        fn arb_version_req()(comparators in arb_vec_comparators()) -> VersionReq {
-            VersionReq::parse(&comparators.join(",")).unwrap()
-        }
-    }
-
-    prop_compose! {
-        fn arb_optional_version_req()(comparators in arb_vec_comparators(), none in any::<bool>()) -> Option<VersionReq> {
-            if none {
-                None
-            } else {
-            Some(VersionReq::parse(&comparators.join(",")).unwrap())
-            }
-        }
-    }
-
-    /// Captures the Operator component of a VersionReq, for property testing.
-    #[derive(Arbitrary, Clone, Debug)]
-    enum ComparatorOp {
-        Exact,
-        Greater,
-        GreaterEq,
-        Less,
-        LessEq,
-        Tilde,
-        Caret,
-        // NOTE(canardleteer): We're ignoring the wildcard case, simply
-        //                     because it reduces to some of the Option<u64>
-        //                     cases... and I don't really want to write a
-        //                     regex for Comparator :)
-        // Wildcard
-    }
-    impl fmt::Display for ComparatorOp {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-            match self {
-                ComparatorOp::Exact => write!(f, "="),
-                ComparatorOp::Greater => write!(f, ">"),
-                ComparatorOp::GreaterEq => write!(f, ">="),
-                ComparatorOp::Less => write!(f, "<"),
-                ComparatorOp::LessEq => write!(f, "<="),
-                ComparatorOp::Tilde => write!(f, "~"),
-                ComparatorOp::Caret => write!(f, "^"),
-            }
-        }
-    }
-
-    // Enc Property Test components.
-    ///////////////////////////////////////////////////////////////////////////
 }
