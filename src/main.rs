@@ -66,6 +66,9 @@ pub enum Commands {
     /// "A is {Greater,Equals,Less} {to,than} B", with both Semantic results
     /// (meaninful results under Semantic Versioning), as well as Lexical
     /// results (meaningless, but handy for sorting text lists).
+    ///
+    /// Without enabling `--set_exit_status`, the exit status is generally
+    /// meaningless, other than confirming that the arguments were valid.
     Compare {
         /// If you want some slightly complex exit status codes for this dual
         /// compare, you can turn them on with this flag.
@@ -352,13 +355,39 @@ mod tests {
     use proptest::prelude::*;
     use proptest_semver::*;
 
+    use crate::{version_without_build_metadata, SerializableOrdering};
+
     proptest! {
         //                 None of these tests do much more than ensure the
         //                 application doesn't bounce back or crash on valid
         //                 input.
         #[test]
         fn compare(a in arb_version(), b in arb_version()) {
-            super::compare(&a, &b);
+            let comparison = super::compare(&a, &b);
+
+            let a_no_build = version_without_build_metadata(&a);
+            let b_no_build = version_without_build_metadata(&b);
+
+            if a == b {
+                prop_assert_eq!(a_no_build, b_no_build);
+                prop_assert!(comparison.semantic_ordering() == &SerializableOrdering::Equal);
+            } else if a > b {
+                prop_assert!(comparison.lexical_ordering() == &SerializableOrdering::Greater || comparison.lexical_ordering() == &SerializableOrdering::Equal);
+                prop_assert_eq!(comparison.semantic_ordering(), &SerializableOrdering::Greater);
+            } else {
+                prop_assert!(comparison.lexical_ordering() == &SerializableOrdering::Less || comparison.lexical_ordering() == &SerializableOrdering::Equal);
+                prop_assert_eq!(comparison.semantic_ordering(), &SerializableOrdering::Less);
+            }
+
+
+            // if let ComparisonStatement::Compare(r) = compare {
+
+            // } else {
+            //     prop_panic!("failed to get the right ")
+            // }
+            // if a == b {
+            //     if let
+            // }
         }
 
         #[test]
