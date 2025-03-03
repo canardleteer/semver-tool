@@ -1,4 +1,6 @@
 use assert_cmd::Command;
+use proptest::prelude::*;
+use proptest_semver::*;
 
 const TEST_PKG_NAME: &str = "validate";
 
@@ -29,4 +31,13 @@ fn cli_validate_basic_cases() {
     assert
         .append_context(TEST_PKG_NAME, "1 valid semver arg")
         .success();
+}
+
+proptest! {
+    #[test]
+    fn prop_validate(v in arb_version()) {
+        let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+        let assert = cmd.arg("validate").arg(v.to_string()).assert();
+        assert.append_context("validate", "property testing").success();
+    }
 }
