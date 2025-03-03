@@ -1,7 +1,6 @@
 use assert_cmd::Command;
 use proptest::prelude::*;
 use proptest_semver::*;
-use semver::{BuildMetadata, Version};
 
 const TEST_PKG_NAME: &str = "compare";
 
