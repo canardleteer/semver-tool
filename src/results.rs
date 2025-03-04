@@ -25,6 +25,8 @@ use rand::prelude::*;
 use semver::{BuildMetadata, Version, VersionReq};
 use serde::Serialize;
 
+use super::regex::{generate_any_valid_semver, generate_u64_safe_semver};
+
 /// The result of a simple filter test.
 #[derive(Serialize, PartialEq)]
 pub(crate) struct ValidateResult {
@@ -212,6 +214,31 @@ impl fmt::Display for FlatVersionsList {
     }
 }
 
+/// A simple list of Strings.
+///
+/// NOTE(canardleteer): Probably could become any serializable type with Display.
+#[derive(Serialize, PartialEq)]
+pub(crate) struct FlatStringList {
+    versions: Vec<String>,
+}
+
+impl From<GenerateResult> for FlatStringList {
+    fn from(value: GenerateResult) -> Self {
+        Self {
+            versions: value.into_inner(),
+        }
+    }
+}
+
+impl fmt::Display for FlatStringList {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        for v in self.versions.iter() {
+            writeln!(f, "{v}")?
+        }
+        Ok(())
+    }
+}
+
 /// A usefully ordered list of versions.
 #[derive(Serialize)]
 pub(crate) struct OrderedVersionMap {
@@ -310,6 +337,26 @@ impl ComparisonStatement {
 
     pub(crate) fn semantic_ordering(&self) -> &SerializableOrdering {
         &self.semantic_ordering
+    }
+}
+
+#[derive(Serialize, PartialEq)]
+pub(crate) struct GenerateResult {
+    inner: Vec<String>,
+}
+
+impl GenerateResult {
+    pub(crate) fn new(small: bool, count: usize) -> Self {
+        let inner = if small {
+            generate_u64_safe_semver(count)
+        } else {
+            generate_any_valid_semver(count)
+        };
+        GenerateResult { inner }
+    }
+
+    pub(crate) fn into_inner(self) -> Vec<String> {
+        self.inner.clone()
     }
 }
 

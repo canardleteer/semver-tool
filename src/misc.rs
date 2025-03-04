@@ -77,6 +77,8 @@ pub(crate) enum ApplicationOutput {
     VersionExplaination(results::VersionExplaination),
     /// Flat list of versions
     FlatVersionsList(results::FlatVersionsList),
+    /// Flat list of strings
+    FlatStringList(results::FlatStringList),
     /// Results from a filter test
     FilterTestResult(results::FilterTestResult),
     /// Results from a test
@@ -118,6 +120,12 @@ impl From<results::ValidateResult> for ApplicationOutput {
     }
 }
 
+impl From<results::GenerateResult> for ApplicationOutput {
+    fn from(value: results::GenerateResult) -> Self {
+        ApplicationOutput::FlatStringList(value.into())
+    }
+}
+
 impl Termination for ApplicationOutput {
     // NOTE(canardleteer): only expected to be called along certain code paths
     //                     (at least for now).
@@ -148,6 +156,9 @@ impl fmt::Display for ApplicationOutput {
                 write!(f, "{}", v)
             }
             ApplicationOutput::FlatVersionsList(v) => {
+                write!(f, "{}", v)
+            }
+            ApplicationOutput::FlatStringList(v) => {
                 write!(f, "{}", v)
             }
             ApplicationOutput::FilterTestResult(v) => {
