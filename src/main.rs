@@ -26,6 +26,7 @@ use std::error::Error;
 use std::io;
 
 mod misc;
+mod regex;
 mod results;
 
 use misc::*;
@@ -187,6 +188,16 @@ pub enum Commands {
         /// Version to validate
         version: Version,
     },
+    /// Generate random & valid Semantic Version Strings
+    Generate {
+        /// "Small" will keep the MAJOR.MINOR.PATCH components under [u64::MAX].
+        #[clap(long, short = 's', action)]
+        small: bool,
+
+        /// How many to create (default 1)
+        #[clap(default_value_t = 1)]
+        count: usize,
+    },
 }
 
 fn main() -> Result<ApplicationTermination, Box<dyn Error>> {
@@ -265,6 +276,7 @@ fn main() -> Result<ApplicationTermination, Box<dyn Error>> {
             semantic_version,
         } => filter_test(&filter, &semantic_version).into(),
         Commands::Validate { version } => validate(&version).into(),
+        Commands::Generate { small, count } => generate(small, count).into(),
     };
 
     match args.out {
@@ -312,4 +324,8 @@ fn filter_test(filter: &VersionReq, semantic_version: &Version) -> FilterTestRes
 fn validate(semantic_version: &Version) -> ValidateResult {
     // NOTE(canardleteer): This is somewhat of a useless code path.
     ValidateResult::validate(semantic_version)
+}
+
+fn generate(small: bool, count: usize) -> GenerateResult {
+    GenerateResult::new(small, count)
 }
