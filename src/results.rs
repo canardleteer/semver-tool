@@ -360,6 +360,15 @@ impl GenerateResult {
     }
 }
 
+impl fmt::Display for GenerateResult {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        for i in self.inner.iter() {
+            writeln!(f, "{}", &i)?
+        }
+        Ok(())
+    }
+}
+
 /// Invent a way to reasonably express a non-equivalent ComparisonStatement in
 /// a u8, but really, at that point, just use the YAML output.
 ///
@@ -686,6 +695,21 @@ mod tests {
         let test = ValidateResult::validate(&Version::parse("0.0.0-x+b").unwrap());
         assert!(test.valid);
 
+        // Display Coverage
+        let _ = format!("{}", test);
+    }
+
+    #[test]
+    fn test_generate() {
+        let test = GenerateResult::new(false, 10);
+        assert_eq!(test.into_inner().len(), 10);
+
+        let test = GenerateResult::new(true, 10);
+        for s in test.into_inner() {
+            assert!(Version::parse(&s).is_ok())
+        }
+
+        let test = GenerateResult::new(true, 1);
         // Display Coverage
         let _ = format!("{}", test);
     }

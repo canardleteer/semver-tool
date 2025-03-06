@@ -222,6 +222,23 @@ versions:
   - 2.2.2
 ```
 
+### `generate`
+
+Simple "generator" of random SemVer valid strings.
+
+I personally prefer the "text" output of these.
+
+```shell
+$ sem-tool -o text generate 2
+# ... 2 potentially very long strings .... 
+
+$ sem-tool -o text generate -s 2
+# ... 2 potentially very long strings, but with MAJOR.MINOR.PATCH components all under u64::MAX .... 
+
+# Dogfooding example.
+$ sem-tool -o text generate -s 1000 | sem-tool sort
+```
+
 #### `sort` with standard input
 
 ```shell
@@ -301,7 +318,7 @@ $ cat example-data/short-good-versions.txt | sem-tool  -o text sort --flatten -r
 - [X] Need status code responses options
 - [ ] Possibly remove "text" output, or just make it really nice.
 - [ ] Additional language filter implementations
-- [ ] Generate random semantic version lists for helping build tests
+- [X] Generate random semantic version lists for helping build tests
 - [X] Github Actions + release-plz
 - [ ] Commands that take stdin, should probably take file inputs too.
 - [ ] Property testing

@@ -12,6 +12,8 @@ fn cli_insta() {
     //                     Until then, if these get reordered, after
     //                     confirming correctness, you'll need to use
     //                     `INSTA_UPDATE=always` locally to reset snapshots.
+    //
+    // NOTE(canardleteer): No `generate` tests yet.
     let insta_targets = vec![
         vec!["filter-test", ">a.b.c"],
         vec!["filter-test", ">1", "x.y.z"],
