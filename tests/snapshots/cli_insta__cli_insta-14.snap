@@ -7,10 +7,9 @@ info:
     - a.b.c
 ---
 success: false
-exit_code: 2
+exit_code: 1
 ----- stdout -----
+---
+valid: false
 
 ----- stderr -----
-error: invalid value 'a.b.c' for '<VERSION>': unexpected character 'a' while parsing major version number
-
-For more information, try '--help'.

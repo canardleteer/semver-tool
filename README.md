@@ -27,12 +27,18 @@ This is a single tool to provide support for that purpse.
 Where appropriate opinions on the spec have been made, they have been
 listed in the CLI documentation.
 
+In particular, we use the `semver` crate's interpretation of "filters,"
+for matching. This is **NOT** in the specification, so subject to
+interpretation.
+
 ## Known Limitations
 
 - We (currently) use the [semver crate](https://crates.io/crates/semver), which
   has some limitations not present in the spec.
-  - `u64::MAX` is the maximum a value can be in any of `MAJOR`, `MINOR` or `PATCH`.
+  - `u64::MAX` is sometimes the maximum a value can be in any of `MAJOR`,
+    `MINOR` or `PATCH`.
   - The maximum number of comparators for a filter, is 32.
+- In all cases where a Regular Expression is used, we only accept ASCII input.
 
 ## Installing
 
@@ -66,6 +72,8 @@ Exit Status is available either by default in obvious cases, or by flag in less 
 ### `filter-test`
 
 The `filter-test` subcommand will allow you to test a filter on a version.
+
+- Versions, must have `MAJOR`, `MINOR`, `PATCH` components under `u64::MAX`.
 
 ```shell
 # Passing test
@@ -101,6 +109,20 @@ $ sem-tool validate a.b.c
 valid: false
 $ echo $?
 1
+
+# Passing test (major = u64::MAX+1)
+$ sem-tool validate 18446744073709551616.0.0
+---
+valid: true
+$ echo $?
+0
+
+# Failing test (major = u64::MAX+1)
+$ sem-tool validate -s 18446744073709551616.0.0
+---
+valid: false
+$ echo $?
+1
 ```
 
 ### `explain`
@@ -110,6 +132,9 @@ The `explain` subcommand will break down a version by components.
 The `sem-tool explain --help` command has some useful
 information regarding "why" the output may appear "over-stringified"
 in the breakdown.
+
+- Versions, must have `MAJOR`, `MINOR`, `PATCH` components under `u64::MAX`.
+
 
 ```shell
 $ sem-tool explain 10.1.4-a.b.c+sda.4
@@ -134,6 +159,8 @@ build-metadata:
 ```
 
 ### `compare`
+
+- Versions, must have `MAJOR`, `MINOR`, `PATCH` components under `u64::MAX`.
 
 ```shell
 # simple case
@@ -187,7 +214,11 @@ It is recommended that you read `sem-tool sort --help`, but here are some
 examples. If you're wondering why you may sometimes get different results
 than these, it's once again, helpful to read the `--help`.
 
+- Versions, must have `MAJOR`, `MINOR`, `PATCH` components under `u64::MAX`.
+
 #### `sort` with CLI arguments
+
+- Versions, must have `MAJOR`, `MINOR`, `PATCH` components under `u64::MAX`.
 
 ```shell
 # simple cli argument sorting

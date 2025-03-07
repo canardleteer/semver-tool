@@ -36,6 +36,8 @@ fn cli_insta() {
         vec!["sort", "-f", ">a", "0.1.2-rc0", "0.1.2-rc1"],
         vec!["validate", "a.b.c"],
         vec!["validate", "0.1.2-rc.0.a.1.b+a.0.b.1"],
+        vec!["validate", "-s", "18446744073709551616.0.0"],
+        vec!["validate", "18446744073709551616.0.0"],
         vec!["explain", "a.b.c"],
         vec!["explain", "0.1.2-rc.0.a.1.b+a.0.b.1"],
         vec!["compare", "1.2.3", "4.5.6"],

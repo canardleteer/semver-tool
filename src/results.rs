@@ -22,6 +22,7 @@ use std::{
 
 use indexmap::IndexMap;
 use rand::prelude::*;
+use regex::Regex;
 use semver::{BuildMetadata, Version, VersionReq};
 use serde::Serialize;
 
@@ -34,9 +35,17 @@ pub(crate) struct ValidateResult {
 }
 
 impl ValidateResult {
-    pub(crate) fn validate(_semantic_version: &Version) -> ValidateResult {
-        // The validation, is already done by reaching this code path.
-        ValidateResult { valid: true }
+    pub(crate) fn validate(semantic_version: String, small: bool) -> ValidateResult {
+        let pass = if small {
+            Version::parse(&semantic_version).is_ok()
+        } else {
+            // Static string, always expected to pass being a valid regex.
+            Regex::new(super::regex::SEMVER_REGEX)
+                .unwrap()
+                .is_match(&semantic_version)
+        };
+
+        ValidateResult { valid: pass }
     }
 }
 
@@ -44,6 +53,19 @@ impl fmt::Display for ValidateResult {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         writeln!(f, "valid: {}", self.valid)?;
         Ok(())
+    }
+}
+
+/// A equivalent of an ExitCode, for true/false.
+///
+/// This is expected to remain stable.
+impl Termination for ValidateResult {
+    fn report(self) -> std::process::ExitCode {
+        if self.valid {
+            ExitCode::SUCCESS
+        } else {
+            ExitCode::FAILURE
+        }
     }
 }
 
@@ -691,8 +713,18 @@ mod tests {
 
     #[test]
     fn test_validate() {
-        // This test is somewhat useless except for corvarage.
-        let test = ValidateResult::validate(&Version::parse("0.0.0-x+b").unwrap());
+        let test = ValidateResult::validate("0.0.0-x+b".to_string(), true);
+        assert!(test.valid);
+
+        let test = ValidateResult::validate("0.0.0-x+b".to_string(), false);
+        assert!(test.valid);
+
+        // This should fail.
+        let test = ValidateResult::validate("18446744073709551616.0.0-x+b".to_string(), true);
+        assert!(!test.valid);
+
+        // This should pass.
+        let test = ValidateResult::validate("18446744073709551616.0.0-x+b".to_string(), false);
         assert!(test.valid);
 
         // Display Coverage
