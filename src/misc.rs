@@ -135,6 +135,7 @@ impl Termination for ApplicationOutput {
                 comparison_statement.report()
             }
             ApplicationOutput::FilterTestResult(filter_test_result) => filter_test_result.report(),
+            ApplicationOutput::ValidateResult(validate_result) => validate_result.report(),
             _ => ExitCode::SUCCESS,
         }
     }

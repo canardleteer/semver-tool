@@ -186,11 +186,15 @@ pub enum Commands {
     /// The Status Code will be 0 if it is valid, non-zero if it is not.
     Validate {
         /// Version to validate
-        version: Version,
+        version: String,
+
+        /// "Small" will ensure the MAJOR, MINOR & PATCH components are under [u64::MAX].
+        #[clap(long, short = 's', action)]
+        small: bool,
     },
     /// Generate random & valid Semantic Version Strings
     Generate {
-        /// "Small" will keep the MAJOR.MINOR.PATCH components under [u64::MAX].
+        /// "Small" will ensure the MAJOR, MINOR & PATCH components are under [u64::MAX].
         #[clap(long, short = 's', action)]
         small: bool,
 
@@ -275,7 +279,7 @@ fn main() -> Result<ApplicationTermination, Box<dyn Error>> {
             filter,
             semantic_version,
         } => filter_test(&filter, &semantic_version).into(),
-        Commands::Validate { version } => validate(&version).into(),
+        Commands::Validate { version, small } => validate(version, small).into(),
         Commands::Generate { small, count } => generate(small, count).into(),
     };
 
@@ -321,9 +325,9 @@ fn filter_test(filter: &VersionReq, semantic_version: &Version) -> FilterTestRes
     FilterTestResult::filter_test(filter, semantic_version)
 }
 
-fn validate(semantic_version: &Version) -> ValidateResult {
+fn validate(semantic_version: String, small: bool) -> ValidateResult {
     // NOTE(canardleteer): This is somewhat of a useless code path.
-    ValidateResult::validate(semantic_version)
+    ValidateResult::validate(semantic_version, small)
 }
 
 fn generate(small: bool, count: usize) -> GenerateResult {
