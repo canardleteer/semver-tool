@@ -378,16 +378,6 @@ mod tests {
                 prop_assert!(comparison.lexical_ordering() == &SerializableOrdering::Less || comparison.lexical_ordering() == &SerializableOrdering::Equal);
                 prop_assert_eq!(comparison.semantic_ordering(), &SerializableOrdering::Less);
             }
-
-
-            // if let ComparisonStatement::Compare(r) = compare {
-
-            // } else {
-            //     prop_panic!("failed to get the right ")
-            // }
-            // if a == b {
-            //     if let
-            // }
         }
 
         #[test]
@@ -409,6 +399,13 @@ mod tests {
         fn sort(versions in arb_vec_versions(256), filter in arb_optional_version_req(0.5, MAX_COMPARATORS_IN_VERSION_REQ_STRING), lexical_sorting in any::<bool>(), reverse in any::<bool>()) {
             let mut versions = versions.clone();
             super::sort(&mut versions, &filter, lexical_sorting, reverse);
+        }
+
+        #[test]
+        fn generate(small: bool, count: u8) {
+            // Not going to flex maxing out memory allocations here, limiting
+            // to u8 testing.
+            super::generate(small, count.into());
         }
     }
 }
