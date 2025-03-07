@@ -214,6 +214,10 @@ It is recommended that you read `sem-tool sort --help`, but here are some
 examples. If you're wondering why you may sometimes get different results
 than these, it's once again, helpful to read the `--help`.
 
+The result additionally includes a flag called `potentially_ambiguous`, which
+can be used to identify potentially ambiguous Semantic Versions (any "order" is
+valid).
+
 - Versions, must have `MAJOR`, `MINOR`, `PATCH` components under `u64::MAX`.
 
 #### `sort` with CLI arguments
@@ -231,6 +235,7 @@ versions:
   - 2.2.2
   3.2.1:
   - 3.2.1
+potentially_ambiguous: false
 
 # simple cli argument sorting, reverse ordering
 $ sem-tool sort -r 1.2.3 3.2.1 2.2.2
@@ -242,6 +247,7 @@ versions:
   - 2.2.2
   1.2.3:
   - 1.2.3
+potentially_ambiguous: false
 
 # filtering
 $ sem-tool sort -f ">=2" -r 1.2.3 3.2.1 2.2.2
@@ -251,23 +257,11 @@ versions:
   - 3.2.1
   2.2.2:
   - 2.2.2
-```
+potentially_ambiguous: false
 
-### `generate`
-
-Simple "generator" of random SemVer valid strings.
-
-I personally prefer the "text" output of these.
-
-```shell
-$ sem-tool -o text generate 2
-# ... 2 potentially very long strings .... 
-
-$ sem-tool -o text generate -s 2
-# ... 2 potentially very long strings, but with MAJOR.MINOR.PATCH components all under u64::MAX .... 
-
-# Dogfooding example.
-$ sem-tool -o text generate -s 1000 | sem-tool sort
+# check for potential ambiguity
+$ sem-tool sort --fail-if-potentially-ambiguous 1.2.3+bm0 2.2.0 2.2.0+bm0
+Error: FailedRequirementError { err: "Potential Ambiguity Detected" }
 ```
 
 #### `sort` with standard input
@@ -292,6 +286,7 @@ versions:
   - 1.0.0-rc-2.0+dddddd
   99.99.0-rc1.0:
   - 99.99.0-rc1.0
+potentially_ambiguous: true
 
 # reverse ordering
 $ cat example-data/short-good-versions.txt | sem-tool sort -r
@@ -312,6 +307,7 @@ versions:
   - 0.0.1
   0.0.0-alpha.0:
   - 0.0.0-alpha.0+metadata
+potentially_ambiguous: true
 
 # filtering (see --help regarding how this filter applies)
 $ cat example-data/short-good-versions.txt | sem-tool sort -r -f '*'
@@ -323,6 +319,7 @@ versions:
   - 0.0.2
   0.0.1:
   - 0.0.1
+potentially_ambiguous: false
 
 # flattening (not recommended)
 $ cat example-data/short-good-versions.txt | sem-tool sort --flatten
@@ -336,6 +333,7 @@ versions:
 - 1.0.0-rc-2.0+aaa.0
 - 1.0.0-rc-2.0+dddddd
 - 99.99.0-rc1.0
+potentially_ambiguous: true
 
 # flat list of latest matching a filter as a plain list
 $ cat example-data/short-good-versions.txt | sem-tool  -o text sort --flatten -r -f "*" 
@@ -344,9 +342,28 @@ $ cat example-data/short-good-versions.txt | sem-tool  -o text sort --flatten -r
 0.0.1
 ```
 
+### `generate`
+
+Simple "generator" of random SemVer valid strings.
+
+I personally prefer the "text" output of these.
+
+```shell
+$ sem-tool -o text generate 2
+# ... 2 potentially very long strings .... 
+
+$ sem-tool -o text generate -s 2
+# ... 2 potentially very long strings, but with MAJOR.MINOR.PATCH components all under u64::MAX .... 
+
+# Dogfooding example.
+$ sem-tool -o text generate -s 1000 | sem-tool sort
+```
+
 ## Todo
 
 - [X] Need status code responses options
+- [X] potential ambiguity
+- [X] regex validate
 - [ ] Possibly remove "text" output, or just make it really nice.
 - [ ] Additional language filter implementations
 - [X] Generate random semantic version lists for helping build tests

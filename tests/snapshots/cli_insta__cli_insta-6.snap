@@ -13,5 +13,6 @@ exit_code: 0
 versions:
   0.1.2-rc0:
   - 0.1.2-rc0
+potentially_ambiguous: false
 
 ----- stderr -----

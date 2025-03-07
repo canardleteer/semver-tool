@@ -4,18 +4,13 @@ info:
   program: sem-tool
   args:
     - sort
-    - "-r"
-    - 0.1.2-rc0
-    - 0.1.2-rc1
+    - "--fail-if-potentially-ambiguous"
+    - 0.1.2+bm0
+    - 0.1.2+bm1
 ---
-success: true
-exit_code: 0
+success: false
+exit_code: 1
 ----- stdout -----
----
-versions:
-  0.1.2-rc1:
-  - 0.1.2-rc1
-  0.1.2-rc0:
-  - 0.1.2-rc0
 
 ----- stderr -----
+Error: FailedRequirementError { err: "Potential Ambiguity Detected" }
