@@ -75,3 +75,8 @@ proptest-semver = "0.1.2"
 inherits = "release"
 lto = "thin"
 
+[profile.test.package.proptest]
+opt-level = 3
+
+[profile.test.package.rand_chacha]
+opt-level = 3
