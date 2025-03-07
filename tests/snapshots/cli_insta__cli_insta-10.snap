@@ -4,7 +4,6 @@ info:
   program: sem-tool
   args:
     - sort
-    - "--lexical-sorting"
     - "--flatten"
     - 0.1.2-rc0
     - 0.1.2-rc1
@@ -16,5 +15,6 @@ exit_code: 0
 versions:
 - 0.1.2-rc0
 - 0.1.2-rc1
+potentially_ambiguous: false
 
 ----- stderr -----

@@ -3,13 +3,17 @@ source: tests/cli_insta.rs
 info:
   program: sem-tool
   args:
-    - validate
-    - a.b.c
+    - sort
+    - "-f"
+    - ">0"
+    - 0.1.2-rc0
+    - 0.1.2-rc1
 ---
-success: false
-exit_code: 1
+success: true
+exit_code: 0
 ----- stdout -----
 ---
-valid: false
+versions: {}
+potentially_ambiguous: false
 
 ----- stderr -----

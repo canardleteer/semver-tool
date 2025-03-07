@@ -4,7 +4,7 @@ info:
   program: sem-tool
   args:
     - sort
-    - "--lexical-sorting"
+    - "-r"
     - 0.1.2-rc0
     - 0.1.2-rc1
 ---
@@ -13,9 +13,10 @@ exit_code: 0
 ----- stdout -----
 ---
 versions:
-  0.1.2-rc0:
-  - 0.1.2-rc0
   0.1.2-rc1:
   - 0.1.2-rc1
+  0.1.2-rc0:
+  - 0.1.2-rc0
+potentially_ambiguous: false
 
 ----- stderr -----

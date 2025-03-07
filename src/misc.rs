@@ -31,6 +31,10 @@ pub(crate) enum ApplicationError {
     /// We were unable to prepare the output as requested.
     #[error("Failed to prepare output in this format {err:?}")]
     OutputFormatError { err: String },
+
+    /// We failed some requirement while processing data.
+    #[error("Failed a requirement {err:?}")]
+    FailedRequirementError { err: String },
 }
 
 #[derive(ValueEnum, Clone, Debug)]

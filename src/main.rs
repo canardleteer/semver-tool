@@ -157,6 +157,11 @@ pub enum Commands {
         /// versioning.
         flatten: bool,
 
+        #[clap(long, action)]
+        /// Fail, if potentially ambiguous precedence may emerge from these
+        /// versions (multiple matching M.M.P-PR, but non-matching metadata).
+        fail_if_potentially_ambiguous: bool,
+
         /// If no versions are present, then the tool will read from stdin, one
         /// version per line.
         versions: Option<Vec<Version>>,
@@ -236,6 +241,7 @@ fn main() -> Result<ApplicationTermination, Box<dyn Error>> {
             lexical_sorting,
             reverse,
             flatten,
+            fail_if_potentially_ambiguous,
         } => {
             let mut parsed_versions = Vec::new();
 
@@ -269,6 +275,12 @@ fn main() -> Result<ApplicationTermination, Box<dyn Error>> {
 
             let mut ordered_version_list =
                 sort(&mut parsed_versions, &filter, lexical_sorting, reverse);
+
+            if fail_if_potentially_ambiguous && ordered_version_list.potentially_ambiguous() {
+                return Err(Box::new(misc::ApplicationError::FailedRequirementError {
+                    err: "Potential Ambiguity Detected".to_string(),
+                }));
+            }
 
             match flatten {
                 true => FlatVersionsList::from(&mut ordered_version_list).into(),

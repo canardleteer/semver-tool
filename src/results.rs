@@ -216,6 +216,7 @@ impl fmt::Display for VersionExplaination {
 #[derive(Serialize, PartialEq)]
 pub(crate) struct FlatVersionsList {
     versions: Vec<Version>,
+    potentially_ambiguous: bool,
 }
 
 impl From<&mut OrderedVersionMap> for FlatVersionsList {
@@ -223,7 +224,10 @@ impl From<&mut OrderedVersionMap> for FlatVersionsList {
         let mut flat: Vec<Version> = Vec::new();
 
         value.inner.iter_mut().for_each(|vv| flat.append(vv.1));
-        Self { versions: flat }
+        Self {
+            versions: flat,
+            potentially_ambiguous: value.potentially_ambiguous,
+        }
     }
 }
 
@@ -266,6 +270,7 @@ impl fmt::Display for FlatStringList {
 pub(crate) struct OrderedVersionMap {
     #[serde(rename(serialize = "versions"))]
     inner: IndexMap<Version, Vec<Version>>,
+    potentially_ambiguous: bool,
 }
 
 impl OrderedVersionMap {
@@ -305,6 +310,7 @@ impl OrderedVersionMap {
             }
         }
 
+        let mut potentially_ambiguous = false;
         // For each key, sort each list of versions in an appropriate order.
         for (_, v) in ordered_version_map.iter_mut() {
             if lexical_sorting {
@@ -316,11 +322,19 @@ impl OrderedVersionMap {
                 v.shuffle(&mut rand::rng());
                 // reverse is silently ignored in this case.
             }
+            if v.len() > 1 {
+                potentially_ambiguous = true
+            }
         }
 
         Self {
             inner: ordered_version_map,
+            potentially_ambiguous,
         }
+    }
+
+    pub fn potentially_ambiguous(&self) -> bool {
+        self.potentially_ambiguous
     }
 }
 
@@ -538,6 +552,7 @@ mod tests {
         assert!(test.inner.contains_key(&Version::parse("99.0.0").unwrap()));
         assert!(test.inner.contains_key(&Version::parse("100.0.0").unwrap()));
         assert!(test.inner.contains_key(&Version::parse("0.0.1").unwrap()));
+        assert!(!test.potentially_ambiguous);
 
         let mut scaffold2: Vec<Version> = vec![
             "0.0.0-alpha.0+metadata",
@@ -572,6 +587,7 @@ mod tests {
         println!("{}", test_keys[0]);
         assert!(test_keys[0] == Version::parse("0.0.0-alpha.0").unwrap());
         assert!(test_keys[test_keys.len() - 1] == Version::parse("99.99.0-rc1.0").unwrap());
+        assert!(test.potentially_ambiguous);
 
         // Reverse of above test.
         let test = OrderedVersionMap::new(&mut scaffold2, &None, false, true);
@@ -580,6 +596,7 @@ mod tests {
         println!("{}", test_keys[0]);
         assert!(test_keys[test_keys.len() - 1] == Version::parse("0.0.0-alpha.0").unwrap());
         assert!(test_keys[0] == Version::parse("99.99.0-rc1.0").unwrap());
+        assert!(test.potentially_ambiguous);
 
         // Filter, this should exclude all versions with pre-releases
         let test = OrderedVersionMap::new(
