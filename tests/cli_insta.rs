@@ -71,6 +71,7 @@ fn cli_insta() {
         vec!["compare", "-e", "-s", "1.2.3+0", "1.2.3+1"],
         vec!["compare", "-e", "-s", "1.2.2", "1.2.3+1"],
         vec!["compare", "-s", "1.2.4+0", "1.2.3+1"],
+        // NOTE(canardleteer): For now, the `generate` command is omitted.
     ];
 
     for args in insta_targets {
