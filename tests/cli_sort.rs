@@ -14,152 +14,141 @@
 //! limitations under the License.
 use assert_cmd::Command;
 
-const TEST_PKG_NAME: &str = "sort";
+mod common;
+use common::subcommands::*;
 
 #[test]
-fn cli_sort_boring_cases() {
-    // Passing status with no args.
-    //
-    // Why? Because the default behavior with no args is to read from STDIN,
-    // and STDIN provides nothing, so the list is truly empty.
+fn cli_sort_invalid_input() {
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
-    cmd.arg(TEST_PKG_NAME)
-        .assert()
-        .append_context(TEST_PKG_NAME, "no args")
-        .success();
-
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
-    let assert = cmd.arg(TEST_PKG_NAME).arg("--help").assert();
-    assert.append_context(TEST_PKG_NAME, "help").success();
-
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
-    let assert = cmd.arg(TEST_PKG_NAME).arg("a.b.c").assert();
+    let assert = cmd.arg(COMMAND_SORT).arg("a.b.c").assert();
     assert
-        .append_context(TEST_PKG_NAME, "1 bad semver args")
+        .append_context(COMMAND_SORT, "1 bad semver args")
         .failure();
 }
 
 #[test]
 fn cli_sort_basic_cases() {
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
-    let assert = cmd.arg(TEST_PKG_NAME).arg("0.1.2-rc0").assert();
-    assert.append_context(TEST_PKG_NAME, "1 item").success();
+    let assert = cmd.arg(COMMAND_SORT).arg("0.1.2-rc0").assert();
+    assert.append_context(COMMAND_SORT, "1 item").success();
 
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
     let assert = cmd
-        .arg(TEST_PKG_NAME)
+        .arg(COMMAND_SORT)
         .arg("-f >0")
         .arg("0.1.2-rc0")
         .arg("0.1.2-rc1")
         .assert();
     assert
-        .append_context(TEST_PKG_NAME, "2 items, -f >0")
+        .append_context(COMMAND_SORT, "2 items, -f >0")
         .success();
 
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
     let assert = cmd
-        .arg(TEST_PKG_NAME)
+        .arg(COMMAND_SORT)
         .arg("-f >1")
         .arg("0.1.2-rc0")
         .arg("0.1.2-rc1")
         .assert();
     assert
-        .append_context(TEST_PKG_NAME, "2 items, -f >1")
+        .append_context(COMMAND_SORT, "2 items, -f >1")
         .success();
 
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
     let assert = cmd
-        .arg(TEST_PKG_NAME)
+        .arg(COMMAND_SORT)
         .arg("-f >a")
         .arg("0.1.2-rc0")
         .arg("0.1.2-rc1")
         .assert();
     assert
-        .append_context(TEST_PKG_NAME, "2 items, -f >a")
+        .append_context(COMMAND_SORT, "2 items, -f >a")
         .failure();
 
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
     let assert = cmd
-        .arg(TEST_PKG_NAME)
+        .arg(COMMAND_SORT)
         .arg("-r")
         .arg("0.1.2-rc0")
         .arg("0.1.2-rc1")
         .assert();
-    assert
-        .append_context(TEST_PKG_NAME, "2 items, -r")
-        .success();
+    assert.append_context(COMMAND_SORT, "2 items, -r").success();
 
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
     let assert = cmd
-        .arg(TEST_PKG_NAME)
+        .arg(COMMAND_SORT)
         .arg("--flatten")
         .arg("0.1.2-rc0")
         .arg("0.1.2-rc1")
         .assert();
     assert
-        .append_context(TEST_PKG_NAME, "2 items, --flatten")
+        .append_context(COMMAND_SORT, "2 items, --flatten")
         .success();
 
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
     let assert = cmd
-        .arg(TEST_PKG_NAME)
+        .arg(COMMAND_SORT)
         .arg("--lexical-sorting")
         .arg("0.1.2-rc0")
         .arg("0.1.2-rc1")
         .assert();
     assert
-        .append_context(TEST_PKG_NAME, "2 items, --lexical-sorting,")
+        .append_context(COMMAND_SORT, "2 items, --lexical-sorting,")
         .success();
 
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
     let assert = cmd
-        .arg(TEST_PKG_NAME)
+        .arg(COMMAND_SORT)
         .arg("--lexical-sorting")
         .arg("--flatten")
         .arg("0.1.2-rc0")
         .arg("0.1.2-rc1")
         .assert();
     assert
-        .append_context(TEST_PKG_NAME, "2 items, --lexical-sorting, --flatten")
+        .append_context(COMMAND_SORT, "2 items, --lexical-sorting, --flatten")
         .success();
 
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
     let assert = cmd
-        .arg(TEST_PKG_NAME)
+        .arg(COMMAND_SORT)
         .arg("--fail-if-potentially-ambiguous")
         .arg("0.1.2+bm0")
         .arg("0.1.2+bm1")
         .assert();
     assert
-        .append_context(TEST_PKG_NAME, "2 items, --lexical-sorting, --flatten")
+        .append_context(COMMAND_SORT, "2 items, --lexical-sorting, --flatten")
         .failure();
 
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
-    let assert = cmd.arg(TEST_PKG_NAME).arg("0.1.2+bm0").arg("0.1.2+bm1").assert();
+    let assert = cmd
+        .arg(COMMAND_SORT)
+        .arg("0.1.2+bm0")
+        .arg("0.1.2+bm1")
+        .assert();
     assert
-        .append_context(TEST_PKG_NAME, "2 items, --lexical-sorting, --flatten")
+        .append_context(COMMAND_SORT, "2 items, --lexical-sorting, --flatten")
         .success();
 
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
     let assert = cmd
-        .arg(TEST_PKG_NAME)
+        .arg(COMMAND_SORT)
         .arg("--fail-if-potentially-ambiguous")
         .arg("--flatten")
         .arg("0.1.2+bm0")
         .arg("0.1.2+bm1")
         .assert();
     assert
-        .append_context(TEST_PKG_NAME, "2 items, --lexical-sorting, --flatten")
+        .append_context(COMMAND_SORT, "2 items, --lexical-sorting, --flatten")
         .failure();
 
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
     let assert = cmd
-        .arg(TEST_PKG_NAME)
+        .arg(COMMAND_SORT)
         .arg("--flatten")
         .arg("0.1.2+bm0")
         .arg("0.1.2+bm1")
         .assert();
     assert
-        .append_context(TEST_PKG_NAME, "2 items, --lexical-sorting, --flatten")
+        .append_context(COMMAND_SORT, "2 items, --lexical-sorting, --flatten")
         .success();
 }

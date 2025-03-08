@@ -14,31 +14,24 @@
 //! limitations under the License.
 use assert_cmd::Command;
 
-const TEST_PKG_NAME: &str = "explain";
+mod common;
+use common::subcommands::*;
 
 #[test]
-fn cli_explain_boring_cases() {
-    // Error status with no args.
+fn cli_explain_invalid_input() {
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
-    cmd.arg(TEST_PKG_NAME)
-        .assert()
-        .append_context(TEST_PKG_NAME, "no args")
-        .failure();
-
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
-    let assert = cmd.arg(TEST_PKG_NAME).arg("--help").assert();
-    assert.append_context(TEST_PKG_NAME, "help").success();
-
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
-    let assert = cmd.arg(TEST_PKG_NAME).arg("a.b.c").assert();
+    let assert = cmd.arg(COMMAND_EXPLAIN).arg("a.b.c").assert();
     assert
-        .append_context(TEST_PKG_NAME, "1 bad semver args")
+        .append_context(COMMAND_EXPLAIN, "1 bad semver args")
         .failure();
 }
 
 #[test]
 fn cli_explain_basic_cases() {
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
-    let assert = cmd.arg(TEST_PKG_NAME).arg("0.1.2-rc.0.a.1.b+a.0.b.1").assert();
-    assert.append_context(TEST_PKG_NAME, "help").success();
+    let assert = cmd
+        .arg(COMMAND_EXPLAIN)
+        .arg("0.1.2-rc.0.a.1.b+a.0.b.1")
+        .assert();
+    assert.append_context(COMMAND_EXPLAIN, "help").success();
 }
