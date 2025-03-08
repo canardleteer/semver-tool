@@ -111,7 +111,7 @@ fn cli_compare_basic_cases() {
     assert
         .append_context(
             "compare",
-            "exit code reporting + semantic equvalence passing",
+            "exit code reporting + semantic equivalence passing",
         )
         .success();
 
@@ -127,7 +127,7 @@ fn cli_compare_basic_cases() {
     assert
         .append_context(
             "compare",
-            "exit code reporting + semantic equvalence passing",
+            "exit code reporting + semantic equivalence passing",
         )
         .code(100);
 
@@ -142,7 +142,7 @@ fn cli_compare_basic_cases() {
     assert
         .append_context(
             "compare",
-            "semantic equvalence passing without complex exit code reporting",
+            "semantic equivalence passing without complex exit code reporting",
         )
         .success();
 }

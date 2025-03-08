@@ -78,7 +78,7 @@ pub(crate) enum ApplicationOutput {
     /// Ordered Map representation of versions
     OrderedVersionMap(results::OrderedVersionMap),
     /// Breakdown of version
-    VersionExplaination(results::VersionExplaination),
+    VersionExplaination(results::VersionExplanation),
     /// Flat list of versions
     FlatVersionsList(results::FlatVersionsList),
     /// Flat list of strings
@@ -100,8 +100,8 @@ impl From<results::OrderedVersionMap> for ApplicationOutput {
         ApplicationOutput::OrderedVersionMap(value)
     }
 }
-impl From<results::VersionExplaination> for ApplicationOutput {
-    fn from(value: results::VersionExplaination) -> Self {
+impl From<results::VersionExplanation> for ApplicationOutput {
+    fn from(value: results::VersionExplanation) -> Self {
         ApplicationOutput::VersionExplaination(value)
     }
 }
