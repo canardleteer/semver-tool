@@ -67,7 +67,7 @@ serde_json = "1.0.138"
 #
 #                     serde_yml is a reasonable drop in replacement, and can be
 #                     used instead. serde_yaml is probably fine for now.
-#                     serde_yml, currently "overquotes" strings, making it
+#                     serde_yml, currently "over quotes" strings, making it
 #                     harder to use with common tools like `yq`, and I haven't
 #                     taken the time to figure out how to make it stop.
 serde_yaml = "0.9.34"
