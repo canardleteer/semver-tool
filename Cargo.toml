@@ -47,7 +47,8 @@ thiserror = "2.0.11"
 #                     size to the binary however (1MB), that we should seek to
 #                     reduce.
 #
-#                     Both are currently required for `sem-tool generate`.
+#                     Both are currently required for `sem-tool generate`, but
+#                     the right place to fix this, is inside `regex_generate`.
 regex_generate = "0.2.3"
 rand_old = { version = "0.8.5", package = "rand" }
 
@@ -62,14 +63,14 @@ regex = { version = "1.11.1", default-features = false, features = ["std"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0.138"
 
-# NOTE(canardleteer): serde_yml is a reasonable drop in replacement, and can
-#                     be used instead. serde_yaml is probably fine for now.
+# NOTE(canardleteer): serde_YAML vs serde_YML:
+#
+#                     serde_yml is a reasonable drop in replacement, and can be
+#                     used instead. serde_yaml is probably fine for now.
 #                     serde_yml, currently "overquotes" strings, making it
 #                     harder to use with common tools like `yq`, and I haven't
 #                     taken the time to figure out how to make it stop.
 serde_yaml = "0.9.34"
-
-
 
 [dev-dependencies]
 assert_cmd = "2.0.16"
