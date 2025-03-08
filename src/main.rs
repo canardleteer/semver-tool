@@ -50,12 +50,12 @@ pub enum Commands {
     /// Breaks apart the Semantic Version, into it's individual components.
     ///
     /// All values are returned as strings, because the unsigned integer
-    /// types are not necessarilly bound by a numeric type that is parseable
+    /// types are not necessarily bound by a numeric type that is parsable
     /// by common libraries.
     ///
     /// It is worth noting, Semver 2.0.0 §11.4.1 & §11.4.2 pre-release &
     /// metadata dot separated values, cannot be negative numbers, since
-    /// they cannot be represented with hypens.
+    /// they cannot be represented with hyphens.
     ///
     /// Reference: https://semver.org/#spec-item-11
     ///
@@ -64,7 +64,7 @@ pub enum Commands {
     ///
     /// Results are provided in the form
     /// "A is {Greater,Equals,Less} {to,than} B", with both Semantic results
-    /// (meaninful results under Semantic Versioning), as well as Lexical
+    /// (meaningful results under Semantic Versioning), as well as Lexical
     /// results (meaningless, but handy for sorting text lists).
     Compare {
         /// If you want some slightly complex exit status codes for this dual
@@ -146,7 +146,7 @@ pub enum Commands {
         ///
         /// Note, "reversing" always effects the comparable versions being
         /// ordered, but is ignored when NOT lexically sorted, for the list of
-        /// sematically identical versions (aka, different metadata). Since by
+        /// semantically identical versions (aka, different metadata). Since by
         /// default they are randomly sorted, there is no point.
         reverse: bool,
 
@@ -330,8 +330,8 @@ fn compare(a: &Version, b: &Version) -> ComparisonStatement {
     ComparisonStatement::new(a, b)
 }
 
-fn explain(v: &Version) -> VersionExplaination {
-    VersionExplaination::from(v)
+fn explain(v: &Version) -> VersionExplanation {
+    VersionExplanation::from(v)
 }
 fn filter_test(filter: &VersionReq, semantic_version: &Version) -> FilterTestResult {
     FilterTestResult::filter_test(filter, semantic_version)

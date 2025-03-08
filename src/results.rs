@@ -139,7 +139,7 @@ impl fmt::Display for PreMetaSegment {
 
 impl From<&str> for PreMetaSegment {
     fn from(value: &str) -> Self {
-        // WARNING(canardletter): Note, the spec does not enforce any numeric limit here.
+        // WARNING(canardleteer): Note, the spec does not enforce any numeric limit here.
         let digit_count = value
             .chars()
             .filter(|char| char.is_ascii_digit())
@@ -159,7 +159,7 @@ impl From<&str> for PreMetaSegment {
 
 /// Descriptive information about a Version.
 #[derive(Serialize, PartialEq)]
-pub(crate) struct VersionExplaination {
+pub(crate) struct VersionExplanation {
     major: u64,
     minor: u64,
     patch: u64,
@@ -171,7 +171,7 @@ pub(crate) struct VersionExplaination {
     build_metadata: Vec<PreMetaSegment>,
 }
 
-impl From<&Version> for VersionExplaination {
+impl From<&Version> for VersionExplanation {
     fn from(value: &Version) -> Self {
         Self {
             major: value.major,
@@ -195,7 +195,7 @@ impl From<&Version> for VersionExplaination {
     }
 }
 
-impl fmt::Display for VersionExplaination {
+impl fmt::Display for VersionExplanation {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         writeln!(f, "Major: {}", self.major)?;
         writeln!(f, "Minor: {}", self.minor)?;
@@ -408,7 +408,7 @@ impl fmt::Display for GenerateResult {
 /// Invent a way to reasonably express a non-equivalent ComparisonStatement in
 /// a u8, but really, at that point, just use the YAML output.
 ///
-/// - Equavalent of both types, will always be ExitCode::SUCCESS.
+/// - Equivalent of both types, will always be ExitCode::SUCCESS.
 /// - All the rest should be considered UNSTABLE, until we can come up with a
 ///   better plan.
 ///
@@ -666,13 +666,12 @@ mod tests {
         // Display Coverage
         let _ = format!("{}", test);
     }
-    // VersionExplaination
 
     // static test for explain
     #[test]
-    fn test_version_explaination() {
+    fn test_version_explanation() {
         let test =
-            VersionExplaination::from(&Version::parse("0.0.0-0.a.b.c.4+0.-1.a.b0.3").unwrap());
+            VersionExplanation::from(&Version::parse("0.0.0-0.a.b.c.4+0.-1.a.b0.3").unwrap());
 
         assert!(test.major == 0);
         assert!(test.minor == 0);

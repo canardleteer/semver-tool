@@ -20,7 +20,7 @@ partially or incorrectly implemented. It's a foundational communication
 mechanism for engineers, and should be treated with the care and diligence
 it's owed.
 
-This is a single tool to provide support for that purpse.
+This is a single tool to provide support for that purpose.
 
 ## Opinions
 
@@ -135,7 +135,6 @@ in the breakdown.
 
 - Versions, must have `MAJOR`, `MINOR`, `PATCH` components under `u64::MAX`.
 
-
 ```shell
 $ sem-tool explain 10.1.4-a.b.c+sda.4
 ---
@@ -205,7 +204,7 @@ $ echo $?
 
 ### `sort`
 
-The `sort` command is somewhat complex, but offers 2 differet modes of input:
+The `sort` command is somewhat complex, but offers 2 different modes of input:
 
 - CLI arguments
 - reading from standard input
